@@ -343,6 +343,14 @@ h1,h2,h3,h4{font-family:"Lora",serif}
 .star-btn:hover{transform:scale(1.16)}
 .star-btn.active{color:var(--gold)}
 .rating-status{margin-top:12px;font-size:.68rem;color:var(--muted);min-height:16px}
+.photo-upload-indicator{margin-top:9px;display:flex;align-items:center;gap:8px;padding:9px 11px;border:1px solid var(--line);border-radius:8px;background:var(--paper-2);font-size:.62rem;color:var(--ink)}
+.photo-upload-indicator[hidden]{display:none}
+.photo-upload-spinner{width:14px;height:14px;border:2px solid var(--line);border-top-color:var(--brick-2);border-radius:50%;animation:photoSpin .7s linear infinite;flex:0 0 auto}
+.photo-upload-indicator.success .photo-upload-spinner{animation:none;border-color:#4e9b6f;position:relative}
+.photo-upload-indicator.success .photo-upload-spinner:after{content:"✓";position:absolute;inset:-4px 0 0 1px;color:#4e9b6f;font-size:14px;font-weight:900}
+.photo-upload-indicator.error .photo-upload-spinner{animation:none;border-color:#b64736;position:relative}
+.photo-upload-indicator.error .photo-upload-spinner:after{content:"!";position:absolute;inset:-4px 0 0 4px;color:#b64736;font-size:13px;font-weight:900}
+@keyframes photoSpin{to{transform:rotate(360deg)}}
 .rating-list{margin-top:20px;display:flex;flex-direction:column;gap:8px}
 .rating-list-item{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:11px 15px;background:var(--paper);border:1px solid var(--line);font-size:.72rem}
 .rating-list-item b{color:var(--ink);font-weight:800;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
@@ -360,6 +368,9 @@ h1,h2,h3,h4{font-family:"Lora",serif}
 .rating-list-photo{width:74px;height:74px;border-radius:8px;object-fit:cover;border:1px solid var(--line);margin-top:7px}
 .rating-list-item{display:block}
 .rating-list-top{display:flex;align-items:center;justify-content:space-between;gap:12px}
+ .rating-photo-clear{border:1px solid var(--line);background:transparent;color:var(--muted);border-radius:999px;padding:7px 10px;font-size:.56rem;font-weight:800;cursor:pointer}
+.rating-photo-clear:hover{color:var(--ink);border-color:var(--gold)}
+.rating-photo-remove-saved{border-color:rgba(180,80,60,.35);color:var(--brick-2)}
 .rating-photo-note{color:var(--muted);font-size:.58rem;margin-top:6px}
 .rating-photo-error{color:#b64736;font-size:.62rem;margin-top:6px;min-height:14px}.rating-delete-btn{margin-top:8px;border:1px solid rgba(180,70,54,.25);border-radius:6px;background:transparent;color:#b64736;padding:6px 9px;font-size:.58rem;font-weight:800;cursor:pointer}.rating-delete-btn:hover{background:rgba(180,70,54,.08)}
 
@@ -768,12 +779,18 @@ html[data-theme="moon"] .theme-btn.active{color:#241608}
             <label class="rating-photo-label" for="ratingPhoto">📷 Tambah foto</label>
             <input class="rating-photo-input" id="ratingPhoto" type="file" accept="image/jpeg,image/png,image/webp,image/*">
             <span class="rating-photo-name" id="ratingPhotoName">Belum memilih foto</span>
+            <button type="button" class="rating-photo-clear" id="ratingPhotoClear" hidden>Hapus pilihan</button>
+            <button type="button" class="rating-photo-clear rating-photo-remove-saved" id="ratingPhotoRemoveSaved" hidden>Hapus foto tersimpan</button>
           </div>
           <img id="ratingPhotoPreview" class="rating-photo-preview" alt="Pratinjau foto ulasan">
-          <div class="rating-photo-note">Foto akan diperkecil otomatis agar upload lebih ringan.</div>
+          <div class="rating-photo-note">Foto otomatis diperkecil agar upload lebih ringan. Foto tersimpan bisa dihapus kapan saja.</div>
           <div class="rating-photo-error" id="ratingPhotoError"></div>
           <button type="button" class="rating-submit" id="ratingSubmit">Kirim rating &amp; ulasan</button>
           <div class="rating-status" id="ratingStatus"></div>
+          <div class="photo-upload-indicator" id="photoUploadIndicator" hidden aria-live="polite">
+            <span class="photo-upload-spinner" aria-hidden="true"></span>
+            <span id="photoUploadText">Menyiapkan upload foto…</span>
+          </div>
         </div>
       </div>
     </div>
@@ -866,7 +883,7 @@ html[data-theme="moon"] .theme-btn.active{color:#241608}
   <div class="poster-box"><button class="poster-close" id="closePoster" type="button" aria-label="Tutup">✕</button><img src="https://cdn.phototourl.com/free/2026-08-11-6959c21d-31d5-4198-ac27-bd9a14b50514.jpg" alt="Poster Bazar X-4"></div>
 </div>
 <iframe name="ratingSubmitFrame" id="ratingSubmitFrame" title="Pengiriman rating" style="display:none"></iframe>
-<form id="ratingSubmitForm" action="https://script.google.com/macros/s/AKfycbx9PmqdmNP5TQQJt6Sl47tGbUnhDO5Oh1_XqTyPWBp4xvhGchqpUz9055omEBgAz1r6/exec" method="POST" target="ratingSubmitFrame" style="display:none">
+<form id="ratingSubmitForm" action="https://script.google.com/macros/s/AKfycbzPlwxV5x5Dx8v_jPlsF-e2znXYqY1gU-uKphG83MZ9nWUKVl2VH5JpQNVcMxZ9W28x/exec" method="POST" target="ratingSubmitFrame" style="display:none">
   <input name="action" id="rfAction">
   <input name="idToken" id="rfToken">
   <input name="rating" id="rfRating">
@@ -897,7 +914,6 @@ html[data-theme="moon"] .theme-btn.active{color:#241608}
   const RATING_CONFIG={
     clientId:"893588662175-o4vkqhi4hvvrac5cb9t8l17hgl260lf3.apps.googleusercontent.com",
     apiUrl: "https://script.google.com/macros/s/AKfycbzPlwxV5x5Dx8v_jPlsF-e2znXYqY1gU-uKphG83MZ9nWUKVl2VH5JpQNVcMxZ9W28x/exec"
-};
   const RATING_READY=!RATING_CONFIG.clientId.startsWith("GANTI_")&&!RATING_CONFIG.apiUrl.startsWith("GANTI_");
 
   const $=id=>document.getElementById(id);
@@ -1166,6 +1182,16 @@ html[data-theme="moon"] .theme-btn.active{color:#241608}
     ratingMyStars=Number(ratingProfile.rating||0);
     renderStars($("ratingStarsInput"),ratingMyStars);
     $("ratingReview").value=ratingProfile.review||"";
+    if(ratingProfile.photoUrl){
+      $("ratingPhotoPreview").src=ratingProfile.photoUrl;
+      $("ratingPhotoPreview").classList.add("show");
+      $("ratingPhotoName").textContent="Foto tersimpan";
+      $("ratingPhotoRemoveSaved").hidden=false;
+    }else{
+      $("ratingPhotoPreview").classList.remove("show");
+      $("ratingPhotoName").textContent="Belum memilih foto";
+      $("ratingPhotoRemoveSaved").hidden=true;
+    }
     $("ratingStatus").textContent=ratingMyStars>0?"Rating kamu tersimpan. Kamu bisa mengubah rating/ulasan.":"Pilih bintang, tulis ulasan, lalu kirim.";
   }
 
@@ -1197,6 +1223,8 @@ html[data-theme="moon"] .theme-btn.active{color:#241608}
     ratingToken=null;ratingProfile=null;ratingMyStars=0;
     sessionStorage.removeItem("x4-rating-token");
     showLoggedOut();
+    clearPendingPhoto();
+    $("ratingPhotoRemoveSaved").hidden=true;
     fetchSummary();
     if(RATING_READY&&window.google?.accounts?.id)google.accounts.id.disableAutoSelect();
   }
@@ -1207,15 +1235,30 @@ html[data-theme="moon"] .theme-btn.active{color:#241608}
       reader.onload=()=>{
         const img=new Image();
         img.onload=()=>{
-          const max=900;
+          const max=850;
           const scale=Math.min(1,max/Math.max(img.width,img.height));
           const canvas=document.createElement("canvas");
           canvas.width=Math.max(1,Math.round(img.width*scale));
           canvas.height=Math.max(1,Math.round(img.height*scale));
-          const ctx=canvas.getContext("2d");
+          const ctx=canvas.getContext("2d",{alpha:false});
           ctx.drawImage(img,0,0,canvas.width,canvas.height);
-          const data=canvas.toDataURL("image/jpeg",.62);
-          resolve({data:data.split(",")[1],mime:"image/jpeg",name:(file.name||"foto").replace(/\.[^.]+$/,"")+".jpg",preview:data});
+
+          // Coba beberapa kualitas sampai payload cukup ringan untuk POST form.
+          let data="";
+          let quality=.58;
+          for(let i=0;i<6;i++){
+            data=canvas.toDataURL("image/jpeg",quality);
+            const approxBytes=Math.ceil((data.length-data.indexOf(",")-1)*.75);
+            if(approxBytes<=220000)break;
+            quality-=.07;
+          }
+
+          resolve({
+            data:data.split(",")[1],
+            mime:"image/jpeg",
+            name:(file.name||"foto").replace(/\.[^.]+$/,""),
+            preview:data
+          });
         };
         img.onerror=()=>reject(new Error("Foto tidak bisa dibaca."));
         img.src=reader.result;
@@ -1229,14 +1272,17 @@ html[data-theme="moon"] .theme-btn.active{color:#241608}
     $("ratingPhotoError").textContent="";
     ratingPhotoData="";ratingPhotoMime="";ratingPhotoName="";
     $("ratingPhotoPreview").classList.remove("show");
+    $("ratingPhotoClear").hidden=true;
     $("ratingPhotoName").textContent="Belum memilih foto";
     if(!file)return;
     if(!file.type.startsWith("image/")){
       $("ratingPhotoError").textContent="File harus berupa gambar.";
+      $("ratingPhoto").value="";
       return;
     }
-    if(file.size>8*1024*1024){
-      $("ratingPhotoError").textContent="Foto maksimal 8 MB sebelum diperkecil.";
+    if(file.size>10*1024*1024){
+      $("ratingPhotoError").textContent="Foto maksimal 10 MB sebelum diperkecil.";
+      $("ratingPhoto").value="";
       return;
     }
     try{
@@ -1245,69 +1291,151 @@ html[data-theme="moon"] .theme-btn.active{color:#241608}
       $("ratingPhotoName").textContent=file.name;
       $("ratingPhotoPreview").src=x.preview;
       $("ratingPhotoPreview").classList.add("show");
+      $("ratingPhotoClear").hidden=false;
     }catch(e){
       $("ratingPhotoError").textContent=e.message||"Gagal memproses foto.";
+      $("ratingPhoto").value="";
     }
+  }
+
+  function clearPendingPhoto(){
+    ratingPhotoData="";ratingPhotoMime="";ratingPhotoName="";
+    $("ratingPhoto").value="";
+    $("ratingPhotoPreview").classList.remove("show");
+    $("ratingPhotoClear").hidden=true;
+    $("ratingPhotoError").textContent="";
+    $("ratingPhotoName").textContent=ratingProfile&&ratingProfile.photoUrl?"Foto tersimpan":"Belum memilih foto";
+  }
+
+  async function removeSavedPhoto(){
+    if(!ratingToken||!ratingProfile?.reviewId){toast("Belum ada ulasan yang bisa diubah.");return;}
+    if(!ratingProfile.photoUrl){toast("Belum ada foto tersimpan.");return;}
+    if(!confirm("Hapus foto ulasan ini? Komentar dan rating tetap disimpan."))return;
+    const btn=$("ratingPhotoRemoveSaved");
+    btn.disabled=true;
+    $("ratingStatus").textContent="Menghapus foto…";
+    try{
+      await ratingPost({action:"removePhoto",idToken:ratingToken,reviewId:ratingProfile.reviewId});
+      const me=await ratingGet({action:"me",idToken:ratingToken});
+      if(!me.ok)throw new Error(me.error||"Gagal membaca data setelah penghapusan foto.");
+      ratingProfile.photoUrl=me.me.photoUrl||"";
+      await refreshSummaryReliable(5);
+      clearPendingPhoto();
+      $("ratingPhotoRemoveSaved").hidden=true;
+      $("ratingStatus").textContent="Foto ulasan sudah dihapus. Rating dan komentar tetap ada.";
+      toast("Foto berhasil dihapus");
+    }catch(e){
+      $("ratingStatus").textContent=e.message||"Gagal menghapus foto.";
+      toast(e.message||"Gagal menghapus foto.");
+    }finally{
+      btn.disabled=false;
+    }
+  }
+
+  function setPhotoUploadState(state,text){
+    const box=$("photoUploadIndicator");
+    const label=$("photoUploadText");
+    if(!box||!label)return;
+    box.hidden=false;
+    box.classList.remove("success","error");
+    if(state==="success")box.classList.add("success");
+    if(state==="error")box.classList.add("error");
+    label.textContent=text;
+  }
+
+  function hidePhotoUploadState(){
+    const box=$("photoUploadIndicator");
+    if(box){box.hidden=true;box.classList.remove("success","error");}
   }
 
   async function submitRating(){
     if(!ratingToken){toast("Login dulu untuk kasih rating");return;}
     const stars=ratingMyStars;
     if(!stars){$("ratingStatus").textContent="Pilih bintang dulu.";return;}
+
     const review=$("ratingReview").value.trim();
     const hasPhoto=!!ratingPhotoData;
     const btn=$("ratingSubmit");
     btn.disabled=true;
-    $("ratingStatus").textContent="Menyimpan rating & ulasan…";
+    hidePhotoUploadState();
+
     try{
-      await ratingPost({action:"rate",idToken:ratingToken,rating:stars,review:review});
+      let reviewId=ratingProfile?.reviewId||"";
+
+      if(hasPhoto){
+        $("ratingStatus").textContent="Menyiapkan upload foto…";
+        setPhotoUploadState("loading","Menyiapkan upload foto…");
+
+        const prep=await ratingPost({action:"prepare",idToken:ratingToken});
+        if(!prep||prep.ok===false||!prep.reviewId){
+          throw new Error((prep&&prep.error)||"Gagal menyiapkan upload foto.");
+        }
+        reviewId=prep.reviewId;
+        ratingProfile.reviewId=reviewId;
+
+        setPhotoUploadState("loading","Mengupload foto ke Google Drive…");
+        $("ratingStatus").textContent="Foto sedang diupload. Jangan tutup halaman…";
+
+        const up=await ratingPost({
+          action:"uploadPhoto",
+          idToken:ratingToken,
+          reviewId:reviewId,
+          photoData:ratingPhotoData,
+          photoMime:ratingPhotoMime,
+          photoName:ratingPhotoName
+        });
+        if(!up||up.ok===false){
+          throw new Error((up&&up.error)||"Upload foto gagal.");
+        }
+
+        const afterPhoto=await ratingGet({action:"me",idToken:ratingToken});
+        if(!afterPhoto.ok)throw new Error(afterPhoto.error||"Tidak bisa memverifikasi upload foto.");
+        if(!afterPhoto.me.photoUrl)throw new Error("Foto belum tercatat di server.");
+
+        ratingProfile.photoUrl=afterPhoto.me.photoUrl;
+        setPhotoUploadState("success","Foto berhasil diupload dan sudah tersimpan di Google Drive ✓");
+        $("ratingStatus").textContent="Foto sudah aman. Sekarang menyimpan teks & rating…";
+      }
+
+      const rateRes=await ratingPost({action:"rate",idToken:ratingToken,rating:stars,review:review});
+      if(!rateRes||rateRes.ok===false){
+        throw new Error((rateRes&&rateRes.error)||"Rating dan teks gagal disimpan.");
+      }
+
       const me=await ratingGet({action:"me",idToken:ratingToken});
-      if(!me.ok)throw new Error(me.error||"Data belum tersimpan.");
+      if(!me.ok)throw new Error(me.error||"Tidak bisa memverifikasi rating.");
+
       ratingProfile.rating=Number(me.me.rating||0);
       ratingProfile.review=me.me.review||"";
       ratingProfile.displayName=me.me.displayName||ratingProfile.displayName;
-      ratingProfile.reviewId=me.me.reviewId||"";
+      ratingProfile.reviewId=me.me.reviewId||reviewId||"";
+      ratingProfile.photoUrl=me.me.photoUrl||ratingProfile.photoUrl||"";
+
       await refreshSummaryReliable(5);
 
-      if(hasPhoto && ratingProfile.reviewId){
-        $("ratingStatus").textContent="Rating tersimpan. Mengunggah foto…";
-        try{
-          await ratingPost({action:"uploadPhoto",idToken:ratingToken,reviewId:ratingProfile.reviewId,photoData:ratingPhotoData,photoMime:ratingPhotoMime,photoName:ratingPhotoName});
-          const afterPhoto=await ratingGet({action:"me",idToken:ratingToken});
-          if(!afterPhoto.ok||!afterPhoto.me.photoUrl)throw new Error("Foto belum tersimpan.");
-          ratingProfile.photoUrl=afterPhoto.me.photoUrl;
-          await refreshSummaryReliable(5);
-          $("ratingStatus").textContent="Terima kasih! Rating, ulasan, dan foto tersimpan.";
-        }catch(photoErr){
-          $("ratingStatus").textContent="Rating & ulasan tersimpan, tetapi foto gagal diupload. Coba pilih foto lagi.";
-        }
+      if(hasPhoto){
+        clearPendingPhoto();
+        $("ratingPhotoRemoveSaved").hidden=!ratingProfile.photoUrl;
+        $("ratingPhotoPreview").src=ratingProfile.photoUrl;
+        $("ratingPhotoPreview").classList.add("show");
+        $("ratingPhotoName").textContent="Foto tersimpan";
+        $("ratingStatus").textContent="✓ Foto, rating, dan teks berhasil tersimpan.";
       }else{
-        $("ratingStatus").textContent="Terima kasih! Rating dan ulasan tersimpan.";
+        $("ratingPhotoRemoveSaved").hidden=!ratingProfile.photoUrl;
+        $("ratingStatus").textContent="✓ Rating dan ulasan berhasil tersimpan.";
       }
 
-      ratingPhotoData="";ratingPhotoMime="";ratingPhotoName="";
-      $("ratingPhotoName").textContent="Belum memilih foto";
-      $("ratingPhotoPreview").classList.remove("show");
-      $("ratingPhoto").value="";
       renderStars($("ratingStarsInput"),ratingProfile.rating);
     }catch(e){
-      $("ratingStatus").textContent=e.message||"Gagal mengirim rating. Coba lagi.";
+      const msg=e.message||"Gagal menyimpan ulasan.";
+      $("ratingStatus").textContent=msg;
+      if(hasPhoto && /foto|upload|drive/i.test(msg)){
+        setPhotoUploadState("error","Upload foto gagal: "+msg+". Teks belum dikirim.");
+      }
+      toast(msg);
     }finally{
       btn.disabled=false;
     }
-  }
-
-  async function refreshSummaryReliable(attempts){
-    let last=null;
-    for(let i=0;i<(attempts||4);i++){
-      try{
-        const data=await ratingGet({action:"summary",idToken:ratingToken});
-        if(data&&typeof data.average!=="undefined"){renderSummary(data);return data;}
-        last=new Error("Respons summary tidak valid.");
-      }catch(e){last=e;}
-      await new Promise(r=>setTimeout(r,500*(i+1)));
-    }
-    if(last)throw last;
   }
 
   async function deleteReview(reviewId){
@@ -1331,9 +1459,8 @@ html[data-theme="moon"] .theme-btn.active{color:#241608}
       if(!deleted)throw new Error("Server belum mengonfirmasi penghapusan.");
       $("ratingReview").value="";
       $("ratingPhotoName").textContent="Belum memilih foto";
-      $("ratingPhotoPreview").classList.remove("show");
-      $("ratingPhoto").value="";
-      ratingPhotoData="";ratingPhotoMime="";ratingPhotoName="";
+      clearPendingPhoto();
+      $("ratingPhotoRemoveSaved").hidden=true;
       renderStars($("ratingStarsInput"),0);
       $("ratingStatus").textContent="Ulasan kamu sudah dihapus.";
       toast("Ulasan berhasil dihapus");
@@ -1384,6 +1511,8 @@ html[data-theme="moon"] .theme-btn.active{color:#241608}
     $("ratingStarsInput").addEventListener("mouseleave",function(){renderStars(this,ratingMyStars);});
     $("ratingSubmit").addEventListener("click",submitRating);
     $("ratingPhoto").addEventListener("change",function(){handlePhotoChange(this.files[0]);});
+    $("ratingPhotoClear").addEventListener("click",clearPendingPhoto);
+    $("ratingPhotoRemoveSaved").addEventListener("click",removeSavedPhoto);
     $("ratingLogout").addEventListener("click",ratingLogout);
     $("editNameBtn").addEventListener("click",function(){
       $("ratingNameInput").value=ratingProfile.displayName||"";
