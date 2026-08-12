@@ -1083,34 +1083,83 @@ html[data-theme="moon"] .theme-btn.active{color:#241608}
 
   function ratingPost(payload){
     return new Promise((resolve,reject)=>{
-      const frame=$("ratingSubmitFrame");
-      const form=$("ratingSubmitForm");
-      const timeout=setTimeout(()=>reject(new Error("Timeout mengirim data.")),15000);
-      function done(e){
-        clearTimeout(timeout);
-        window.removeEventListener("message",onMessage);
-        if(e&&e.data&&e.data.source==="bazar-rating"){
-          if(e.data.ok)resolve(e.data);
-          else reject(new Error(e.data.error||"Server menolak data."));
-        }else{
-          resolve({ok:true});
-        }
+      const api=RATING_CONFIG.apiUrl;
+      if(!api){reject(new Error("URL server rating belum diatur."));return;}
+
+      // Buat iframe + form baru setiap request. Ini lebih stabil di GitHub Pages
+      // daripada memakai form/iframe tersembunyi yang sudah ada di DOM.
+      const frame=document.createElement("iframe");
+      const frameName="ratingPost_"+Date.now()+"_"+Math.random().toString(36).slice(2);
+      frame.name=frameName;
+      frame.style.position="fixed";
+      frame.style.width="1px";
+      frame.style.height="1px";
+      frame.style.left="-10000px";
+      frame.style.top="-10000px";
+      frame.style.border="0";
+      frame.setAttribute("aria-hidden","true");
+
+      const form=document.createElement("form");
+      form.method="POST";
+      form.action=api;
+      form.target=frameName;
+      form.style.position="fixed";
+      form.style.left="-10000px";
+      form.style.top="-10000px";
+
+      const fields={
+        action:payload.action||"",
+        idToken:payload.idToken||"",
+        rating:payload.rating||"",
+        displayName:payload.displayName||"",
+        review:payload.review||"",
+        photoData:payload.photoData||"",
+        photoMime:payload.photoMime||"",
+        photoName:payload.photoName||""
+      };
+
+      Object.keys(fields).forEach(name=>{
+        const input=document.createElement("input");
+        input.type="hidden";
+        input.name=name;
+        input.value=String(fields[name]);
+        form.appendChild(input);
+      });
+
+      let finished=false;
+      const cleanup=()=>{
+        setTimeout(()=>{
+          try{frame.remove();}catch(e){}
+          try{form.remove();}catch(e){}
+        },3000);
+      };
+
+      // Apps Script mengembalikan HTML ke iframe. Kita tidak bergantung pada
+      // postMessage-nya; cukup pastikan form sudah terkirim lalu baca ulang
+      // summary melalui GET yang sudah terbukti bekerja.
+      const finish=()=>{
+        if(finished)return;
+        finished=true;
+        cleanup();
+        resolve({ok:true});
+      };
+
+      frame.addEventListener("load",finish,{once:true});
+      document.body.appendChild(frame);
+      document.body.appendChild(form);
+
+      try{
+        form.submit();
+      }catch(err){
+        finished=true;
+        cleanup();
+        reject(err);
+        return;
       }
-      function onMessage(e){
-        if(e.source!==frame.contentWindow)return;
-        done(e);
-      }
-      window.addEventListener("message",onMessage);
-      $("rfAction").value=payload.action||"";
-      $("rfToken").value=payload.idToken||"";
-      $("rfRating").value=payload.rating||"";
-      $("rfName").value=payload.displayName||"";
-      $("rfReview").value=payload.review||"";
-      $("rfPhotoData").value=payload.photoData||"";
-      $("rfPhotoMime").value=payload.photoMime||"";
-      $("rfPhotoName").value=payload.photoName||"";
-      form.submit();
-      setTimeout(()=>window.removeEventListener("message",onMessage),16000);
+
+      // Jangan menunggu respons iframe terlalu lama. doPost tetap berjalan di
+      // server; setelah itu submitRating akan memanggil fetchSummary().
+      setTimeout(finish,7000);
     });
   }
 
