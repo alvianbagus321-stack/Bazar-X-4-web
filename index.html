@@ -1128,19 +1128,6 @@ html[data-theme="moon"] .theme-btn.active{color:#241608}
     });
   }
 
-  async function waitForMe(predicate, attempts=12){
-    let last=null;
-    for(let i=0;i<attempts;i++){
-      try{
-        const me=await ratingGet({action:"me",idToken:ratingToken});
-        if(me&&me.ok&&me.me&&(!predicate||predicate(me.me))) return me;
-        last=new Error((me&&me.error)||"Server belum memperbarui data.");
-      }catch(e){last=e;}
-      await new Promise(r=>setTimeout(r,500*(i+1)));
-    }
-    throw last||new Error("Server belum memperbarui data.");
-  }
-
   function renderStars(container,value){
     container.querySelectorAll(".star-btn").forEach(b=>{
       b.classList.toggle("active",Number(b.dataset.star)<=value);
@@ -1307,8 +1294,8 @@ html[data-theme="moon"] .theme-btn.active{color:#241608}
       $("ratingPhoto").value="";
       return;
     }
-    if(file.size>15*1024*1024){
-      $("ratingPhotoError").textContent="Foto maksimal 15 MB.";
+    if(file.size>32*1024*1024){
+      $("ratingPhotoError").textContent="Foto maksimal 32 MB.";
       $("ratingPhoto").value="";
       return;
     }
@@ -1398,14 +1385,14 @@ html[data-theme="moon"] .theme-btn.active{color:#241608}
           throw new Error((prep&&prep.error)||"Gagal menyiapkan upload foto.");
         }
         // POST melalui iframe tidak mengembalikan JSON. Ambil ReviewID lewat GET /me.
-        const prepMe=await waitForMe(x=>!!x.reviewId,10);
+        const prepMe=await ratingGet({action:"me",idToken:ratingToken});
         if(!prepMe.ok||!prepMe.me.reviewId){
           throw new Error((prepMe&&prepMe.error)||"Server belum membuat ID ulasan.");
         }
         reviewId=prepMe.me.reviewId;
         ratingProfile.reviewId=reviewId;
 
-        setPhotoUploadState("loading","Mengupload foto ke Google Drive…");
+        setPhotoUploadState("loading","Mengupload foto ke ImgBB…");
         $("ratingStatus").textContent="Foto sedang diupload. Jangan tutup halaman…";
 
         const up=await ratingPost({
@@ -1420,12 +1407,12 @@ html[data-theme="moon"] .theme-btn.active{color:#241608}
           throw new Error((up&&up.error)||"Upload foto gagal.");
         }
 
-        const afterPhoto=await waitForMe(x=>!!x.photoUrl,15);
+        const afterPhoto=await ratingGet({action:"me",idToken:ratingToken});
         if(!afterPhoto.ok)throw new Error(afterPhoto.error||"Tidak bisa memverifikasi upload foto.");
         if(!afterPhoto.me.photoUrl)throw new Error("Foto belum tercatat di server.");
 
         ratingProfile.photoUrl=afterPhoto.me.photoUrl;
-        setPhotoUploadState("success","Foto berhasil diupload dan sudah tersimpan di Google Drive ✓");
+        setPhotoUploadState("success","Foto berhasil diupload dan sudah tersimpan di ImgBB ✓");
         $("ratingStatus").textContent="Foto sudah aman. Sekarang menyimpan teks & rating…";
       }
 
@@ -1434,7 +1421,7 @@ html[data-theme="moon"] .theme-btn.active{color:#241608}
         throw new Error((rateRes&&rateRes.error)||"Rating dan teks gagal disimpan.");
       }
 
-      const me=await waitForMe(x=>Number(x.rating||0)===stars && String(x.review||"")===review,12);
+      const me=await ratingGet({action:"me",idToken:ratingToken});
       if(!me.ok)throw new Error(me.error||"Tidak bisa memverifikasi rating.");
 
       ratingProfile.rating=Number(me.me.rating||0);
