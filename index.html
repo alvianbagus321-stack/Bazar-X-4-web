@@ -883,7 +883,7 @@ html[data-theme="moon"] .theme-btn.active{color:#241608}
   <div class="poster-box"><button class="poster-close" id="closePoster" type="button" aria-label="Tutup">✕</button><img src="https://cdn.phototourl.com/free/2026-08-11-6959c21d-31d5-4198-ac27-bd9a14b50514.jpg" alt="Poster Bazar X-4"></div>
 </div>
 <iframe name="ratingSubmitFrame" id="ratingSubmitFrame" title="Pengiriman rating" style="display:none"></iframe>
-<form id="ratingSubmitForm" action="https://script.google.com/macros/s/AKfycbxhHfyiSwwN1EqCU1Ibbl7TeqK3UuTmR-kLgVgQf6j3YQzIv9sjjX_OiJtIUOypCDkv/exec" method="POST" target="ratingSubmitFrame" style="display:none">
+<form id="ratingSubmitForm" action="https://script.google.com/macros/s/AKfycbzPlwxV5x5Dx8v_jPlsF-e2znXYqY1gU-uKphG83MZ9nWUKVl2VH5JpQNVcMxZ9W28x/exec" method="POST" target="ratingSubmitFrame" style="display:none">
   <input name="action" id="rfAction">
   <input name="idToken" id="rfToken">
   <input name="rating" id="rfRating">
@@ -912,9 +912,9 @@ html[data-theme="moon"] .theme-btn.active{color:#241608}
      Selama masih "GANTI_...", tombol login akan disembunyikan otomatis
      dan section rating hanya menampilkan rata-rata (kosong dulu). */
   const RATING_CONFIG={
-  clientId:"893588662175-o4vkqhi4hvvrac5cb9t8l17hgl260lf3.apps.googleusercontent.com",
-  apiUrl:"https://script.google.com/macros/s/AKfycbwOb4evkcFSpVhvku_X3S89nAMcojL4FvuxBZ1l4cF1Ij6ikbqM99aRvqclPEv--ERl/exec"
-};
+    clientId:"893588662175-o4vkqhi4hvvrac5cb9t8l17hgl260lf3.apps.googleusercontent.com",
+    apiUrl:"https://script.google.com/macros/s/AKfycbw8bwMtHpb6y90Or7dY8nXQ6joSaDPmXqHUkpGbuqCwS9oIzVeYTIoaxVTKVeAum0AU/exec"
+  };
   const RATING_READY=!RATING_CONFIG.clientId.startsWith("GANTI_")&&!RATING_CONFIG.apiUrl.startsWith("GANTI_");
 
   const $=id=>document.getElementById(id);
