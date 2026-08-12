@@ -343,6 +343,14 @@ h1,h2,h3,h4{font-family:"Lora",serif}
 .star-btn:hover{transform:scale(1.16)}
 .star-btn.active{color:var(--gold)}
 .rating-status{margin-top:12px;font-size:.68rem;color:var(--muted);min-height:16px}
+.photo-upload-indicator{margin-top:9px;display:flex;align-items:center;gap:8px;padding:9px 11px;border:1px solid var(--line);border-radius:8px;background:var(--paper-2);font-size:.62rem;color:var(--ink)}
+.photo-upload-indicator[hidden]{display:none}
+.photo-upload-spinner{width:14px;height:14px;border:2px solid var(--line);border-top-color:var(--brick-2);border-radius:50%;animation:photoSpin .7s linear infinite;flex:0 0 auto}
+.photo-upload-indicator.success .photo-upload-spinner{animation:none;border-color:#4e9b6f;position:relative}
+.photo-upload-indicator.success .photo-upload-spinner:after{content:"✓";position:absolute;inset:-4px 0 0 1px;color:#4e9b6f;font-size:14px;font-weight:900}
+.photo-upload-indicator.error .photo-upload-spinner{animation:none;border-color:#b64736;position:relative}
+.photo-upload-indicator.error .photo-upload-spinner:after{content:"!";position:absolute;inset:-4px 0 0 4px;color:#b64736;font-size:13px;font-weight:900}
+@keyframes photoSpin{to{transform:rotate(360deg)}}
 .rating-list{margin-top:20px;display:flex;flex-direction:column;gap:8px}
 .rating-list-item{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:11px 15px;background:var(--paper);border:1px solid var(--line);font-size:.72rem}
 .rating-list-item b{color:var(--ink);font-weight:800;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
@@ -779,6 +787,10 @@ html[data-theme="moon"] .theme-btn.active{color:#241608}
           <div class="rating-photo-error" id="ratingPhotoError"></div>
           <button type="button" class="rating-submit" id="ratingSubmit">Kirim rating &amp; ulasan</button>
           <div class="rating-status" id="ratingStatus"></div>
+          <div class="photo-upload-indicator" id="photoUploadIndicator" hidden aria-live="polite">
+            <span class="photo-upload-spinner" aria-hidden="true"></span>
+            <span id="photoUploadText">Menyiapkan upload foto…</span>
+          </div>
         </div>
       </div>
     </div>
@@ -871,7 +883,7 @@ html[data-theme="moon"] .theme-btn.active{color:#241608}
   <div class="poster-box"><button class="poster-close" id="closePoster" type="button" aria-label="Tutup">✕</button><img src="https://cdn.phototourl.com/free/2026-08-11-6959c21d-31d5-4198-ac27-bd9a14b50514.jpg" alt="Poster Bazar X-4"></div>
 </div>
 <iframe name="ratingSubmitFrame" id="ratingSubmitFrame" title="Pengiriman rating" style="display:none"></iframe>
-<form id="ratingSubmitForm" action="#" method="POST" target="ratingSubmitFrame" style="display:none">
+<form id="ratingSubmitForm" action="https://script.google.com/macros/s/AKfycbxhHfyiSwwN1EqCU1Ibbl7TeqK3UuTmR-kLgVgQf6j3YQzIv9sjjX_OiJtIUOypCDkv/exec" method="POST" target="ratingSubmitFrame" style="display:none">
   <input name="action" id="rfAction">
   <input name="idToken" id="rfToken">
   <input name="rating" id="rfRating">
@@ -900,9 +912,10 @@ html[data-theme="moon"] .theme-btn.active{color:#241608}
      Selama masih "GANTI_...", tombol login akan disembunyikan otomatis
      dan section rating hanya menampilkan rata-rata (kosong dulu). */
   const RATING_CONFIG={
-    clientId:"893588662175-o4vkqhi4hvvrac5cb9t8l17hgl260lf3.apps.googleusercontent.com",
-    apiUrl: "https://script.google.com/macros/s/AKfycbxhHfyiSwwN1EqCU1Ibbl7TeqK3UuTmR-kLgVgQf6j3YQzIv9sjjX_OiJtIUOypCDkv/exec
-  const RATING_READY=!RATING_CONFIG.clientId.startsWith("GANTI_")&&RATING_CONFIG.apiUrl.startsWith("https://script.google.com/macros/s/");
+  clientId:"893588662175-o4vkqhi4hvvrac5cb9t8l17hgl260lf3.apps.googleusercontent.com",
+  apiUrl:"https://script.google.com/macros/s/AKfycbwOb4evkcFSpVhvku_X3S89nAMcojL4FvuxBZ1l4cF1Ij6ikbqM99aRvqclPEv--ERl/exec"
+};
+  const RATING_READY=!RATING_CONFIG.clientId.startsWith("GANTI_")&&!RATING_CONFIG.apiUrl.startsWith("GANTI_");
 
   const $=id=>document.getElementById(id);
   const money=n=>"Rp "+Number(n).toLocaleString("id-ID");
@@ -1064,7 +1077,8 @@ html[data-theme="moon"] .theme-btn.active{color:#241608}
 
   /* ====== RATING & LOGIN GOOGLE ====== */
   let ratingToken=null,ratingProfile=null,ratingMyStars=0,ratingPhotoData="",ratingPhotoMime="",ratingPhotoName="";
-  let ratingSummarySeq=0, ratingAccountSeq=0;
+  let ratingSummarySeq=0;
+  let ratingAccountSeq=0;
 
   function decodeJwt(token){
     try{
@@ -1074,37 +1088,31 @@ html[data-theme="moon"] .theme-btn.active{color:#241608}
     }catch(e){return null;}
   }
 
+  /* GET tetap dipakai untuk membaca data karena endpoint Apps Script
+     sudah terbukti bisa diakses dari GitHub Pages. Untuk POST, kita
+     pakai hidden form + iframe agar tidak bergantung pada CORS response. */
   function ratingGet(params){
     const qs=new URLSearchParams(params).toString();
-    return fetch(RATING_CONFIG.apiUrl+"?"+qs+"&cb="+Date.now(),{
-      redirect:"follow",credentials:"omit",cache:"no-store"
-    }).then(async r=>{
-      const text=await r.text();
-      try{return JSON.parse(text);}
-      catch(e){throw new Error("Respons server bukan JSON ("+r.status+").");}
-    });
+    return fetch(RATING_CONFIG.apiUrl+"?"+qs+"&cb="+Date.now(),{redirect:"follow",credentials:"omit",cache:"no-store"})
+      .then(async r=>{
+        const text=await r.text();
+        try{return JSON.parse(text);}
+        catch(e){throw new Error("Respons server bukan JSON ("+r.status+").");}
+      });
   }
 
-  // POST memakai form + iframe. Kita tidak membaca response HTML.
-  // Setelah request selesai, client memverifikasi hasil lewat GET /me.
   function ratingPost(payload){
     return new Promise((resolve,reject)=>{
-      const frame=$("ratingSubmitFrame"), form=$("ratingSubmitForm");
+      const frame=$("ratingSubmitFrame");
+      const form=$("ratingSubmitForm");
       if(!frame||!form){reject(new Error("Form rating tidak ditemukan."));return;}
-      let done=false;
-      const timeout=setTimeout(()=>{
-        cleanup();
-        reject(new Error("Server terlalu lama merespons (30 detik)."));
-      },30000);
-      function cleanup(){
-        clearTimeout(timeout);
-        frame.removeEventListener("load",onLoad);
-      }
+      let finished=false;
+      const timeout=setTimeout(()=>{cleanup();reject(new Error("Server terlalu lama merespons."));},30000);
+      function cleanup(){clearTimeout(timeout);frame.removeEventListener("load",onLoad);}
       function onLoad(){
-        if(done)return;
-        done=true;
-        cleanup();
-        setTimeout(()=>resolve({ok:true}),300);
+        if(finished)return;
+        finished=true;cleanup();
+        setTimeout(()=>resolve({ok:true}),250);
       }
       frame.addEventListener("load",onLoad);
       $("rfAction").value=payload.action||"";
@@ -1118,21 +1126,6 @@ html[data-theme="moon"] .theme-btn.active{color:#241608}
       $("rfReviewId").value=payload.reviewId||"";
       try{form.submit();}catch(err){cleanup();reject(err);}
     });
-  }
-
-  async function waitForMe(check, attempts=10){
-    let last=null;
-    for(let i=0;i<attempts;i++){
-      try{
-        const me=await ratingGet({action:"me",idToken:ratingToken});
-        if(me&&me.ok){
-          if(check(me.me)) return me;
-          last=new Error("Server belum mengonfirmasi perubahan.");
-        }else last=new Error(me?.error||"Gagal membaca data akun.");
-      }catch(e){last=e;}
-      await new Promise(r=>setTimeout(r,500+Math.min(i,5)*500));
-    }
-    throw last||new Error("Server belum mengonfirmasi perubahan.");
   }
 
   function renderStars(container,value){
@@ -1160,9 +1153,7 @@ html[data-theme="moon"] .theme-btn.active{color:#241608}
       const del=item.canDelete?'<button type="button" class="rating-delete-btn" data-delete-id="'+esc(item.id||"")+'">Hapus ulasan</button>':"";
       return '<div class="rating-list-item"><div class="rating-list-top"><b>'+esc(item.displayName||"Pembeli")+'</b><span>'+stars+'</span></div>'+review+photo+del+'</div>';
     }).join("");
-    list.querySelectorAll("[data-delete-id]").forEach(btn=>{
-      btn.addEventListener("click",()=>deleteReview(btn.dataset.deleteId));
-    });
+    list.querySelectorAll("[data-delete-id]").forEach(btn=>btn.addEventListener("click",()=>deleteReview(btn.dataset.deleteId)));
   }
 
   function fetchSummary(){
@@ -1173,7 +1164,8 @@ html[data-theme="moon"] .theme-btn.active{color:#241608}
     const params={action:"summary"};
     if(tokenAtRequest)params.idToken=tokenAtRequest;
     ratingGet(params).then(data=>{
-      if(seq!==ratingSummarySeq||accountSeq!==ratingAccountSeq||tokenAtRequest!==(ratingToken||""))return;
+      // Jangan biarkan response lama menimpa daftar milik akun yang baru login.
+      if(seq!==ratingSummarySeq || accountSeq!==ratingAccountSeq || tokenAtRequest!==(ratingToken||""))return;
       renderSummary(data);
     }).catch(()=>{});
   }
@@ -1201,34 +1193,40 @@ html[data-theme="moon"] .theme-btn.active{color:#241608}
       $("ratingPhotoName").textContent="Belum memilih foto";
       $("ratingPhotoRemoveSaved").hidden=true;
     }
+    $("ratingStatus").textContent=ratingMyStars>0?"Rating kamu tersimpan. Kamu bisa mengubah rating/ulasan.":"Pilih bintang, tulis ulasan, lalu kirim.";
   }
 
   function handleGoogleCredential(response){
-    ratingAccountSeq++; ratingSummarySeq++;
+    ratingAccountSeq++;
+    ratingSummarySeq++;
     ratingToken=response.credential;
     const payload=decodeJwt(ratingToken);
     if(!payload)return;
     sessionStorage.setItem("x4-rating-token",ratingToken);
-    ratingProfile={email:payload.email,name:payload.name,picture:payload.picture,displayName:payload.name,rating:0,review:"",photoUrl:"",reviewId:""};
+    ratingProfile={email:payload.email,name:payload.name,picture:payload.picture,displayName:payload.name,rating:0,review:"",photoUrl:"",row:0};
     showLoggedIn();
     $("ratingStatus").textContent="Menghubungkan…";
     ratingGet({action:"me",idToken:ratingToken}).then(res=>{
-      if(!res.ok)throw new Error(res.error||"Gagal memuat data akun.");
+      if(!res.ok){$("ratingStatus").textContent=res.error||"Gagal memuat data akun.";return;}
       ratingProfile.displayName=res.me.displayName||ratingProfile.name;
-      ratingProfile.rating=Number(res.me.rating||0);
+      ratingProfile.rating=res.me.rating||0;
       ratingProfile.review=res.me.review||"";
       ratingProfile.photoUrl=res.me.photoUrl||"";
       ratingProfile.reviewId=res.me.reviewId||"";
-      showLoggedIn(); fetchSummary();
+      showLoggedIn();
+      fetchSummary();
     }).catch(err=>{$("ratingStatus").textContent=err.message||"Gagal terhubung ke server rating.";});
   }
 
   function ratingLogout(){
-    ratingAccountSeq++; ratingSummarySeq++;
-    ratingToken=null; ratingProfile=null; ratingMyStars=0;
+    ratingAccountSeq++;
+    ratingSummarySeq++;
+    ratingToken=null;ratingProfile=null;ratingMyStars=0;
     sessionStorage.removeItem("x4-rating-token");
-    showLoggedOut(); clearPendingPhoto();
-    $("ratingPhotoRemoveSaved").hidden=true; fetchSummary();
+    showLoggedOut();
+    clearPendingPhoto();
+    $("ratingPhotoRemoveSaved").hidden=true;
+    fetchSummary();
     if(RATING_READY&&window.google?.accounts?.id)google.accounts.id.disableAutoSelect();
   }
 
@@ -1238,24 +1236,28 @@ html[data-theme="moon"] .theme-btn.active{color:#241608}
       reader.onload=()=>{
         const img=new Image();
         img.onload=()=>{
-          const max=700;
+          const max=850;
           const scale=Math.min(1,max/Math.max(img.width,img.height));
           const canvas=document.createElement("canvas");
           canvas.width=Math.max(1,Math.round(img.width*scale));
           canvas.height=Math.max(1,Math.round(img.height*scale));
           const ctx=canvas.getContext("2d",{alpha:false});
           ctx.drawImage(img,0,0,canvas.width,canvas.height);
-          let data="", quality=.55;
+
+          // Coba beberapa kualitas sampai payload cukup ringan untuk POST form.
+          let data="";
+          let quality=.58;
           for(let i=0;i<6;i++){
             data=canvas.toDataURL("image/jpeg",quality);
             const approxBytes=Math.ceil((data.length-data.indexOf(",")-1)*.75);
-            if(approxBytes<=150000)break;
-            quality=Math.max(.25,quality-.06);
+            if(approxBytes<=220000)break;
+            quality-=.07;
           }
+
           resolve({
             data:data.split(",")[1],
             mime:"image/jpeg",
-            name:(file.name||"foto").replace(/\.[^.]+$/,"")+".jpg",
+            name:(file.name||"foto").replace(/\.[^.]+$/,""),
             preview:data
           });
         };
@@ -1276,20 +1278,21 @@ html[data-theme="moon"] .theme-btn.active{color:#241608}
     if(!file)return;
     if(!file.type.startsWith("image/")){
       $("ratingPhotoError").textContent="File harus berupa gambar.";
-      $("ratingPhoto").value=""; return;
+      $("ratingPhoto").value="";
+      return;
     }
     if(file.size>10*1024*1024){
       $("ratingPhotoError").textContent="Foto maksimal 10 MB sebelum diperkecil.";
-      $("ratingPhoto").value=""; return;
+      $("ratingPhoto").value="";
+      return;
     }
     try{
       const x=await resizeImage(file);
-      ratingPhotoData=x.data; ratingPhotoMime=x.mime; ratingPhotoName=x.name;
+      ratingPhotoData=x.data;ratingPhotoMime=x.mime;ratingPhotoName=x.name;
       $("ratingPhotoName").textContent=file.name;
       $("ratingPhotoPreview").src=x.preview;
       $("ratingPhotoPreview").classList.add("show");
       $("ratingPhotoClear").hidden=false;
-      $("ratingPhotoError").textContent="Foto siap diupload. Klik Kirim.";
     }catch(e){
       $("ratingPhotoError").textContent=e.message||"Gagal memproses foto.";
       $("ratingPhoto").value="";
@@ -1309,122 +1312,162 @@ html[data-theme="moon"] .theme-btn.active{color:#241608}
     if(!ratingToken||!ratingProfile?.reviewId){toast("Belum ada ulasan yang bisa diubah.");return;}
     if(!ratingProfile.photoUrl){toast("Belum ada foto tersimpan.");return;}
     if(!confirm("Hapus foto ulasan ini? Komentar dan rating tetap disimpan."))return;
-    const btn=$("ratingPhotoRemoveSaved"); btn.disabled=true;
+    const btn=$("ratingPhotoRemoveSaved");
+    btn.disabled=true;
     $("ratingStatus").textContent="Menghapus foto…";
     try{
       await ratingPost({action:"removePhoto",idToken:ratingToken,reviewId:ratingProfile.reviewId});
-      const me=await waitForMe(x=>!x.photoUrl,8);
+      const me=await ratingGet({action:"me",idToken:ratingToken});
+      if(!me.ok)throw new Error(me.error||"Gagal membaca data setelah penghapusan foto.");
       ratingProfile.photoUrl=me.me.photoUrl||"";
       await refreshSummaryReliable(5);
+      clearPendingPhoto();
       $("ratingPhotoRemoveSaved").hidden=true;
-      $("ratingStatus").textContent="Foto ulasan sudah dihapus.";
+      $("ratingStatus").textContent="Foto ulasan sudah dihapus. Rating dan komentar tetap ada.";
       toast("Foto berhasil dihapus");
     }catch(e){
       $("ratingStatus").textContent=e.message||"Gagal menghapus foto.";
       toast(e.message||"Gagal menghapus foto.");
-    }finally{btn.disabled=false;}
+    }finally{
+      btn.disabled=false;
+    }
+  }
+
+  function setPhotoUploadState(state,text){
+    const box=$("photoUploadIndicator");
+    const label=$("photoUploadText");
+    if(!box||!label)return;
+    box.hidden=false;
+    box.classList.remove("success","error");
+    if(state==="success")box.classList.add("success");
+    if(state==="error")box.classList.add("error");
+    label.textContent=text;
+  }
+
+  function hidePhotoUploadState(){
+    const box=$("photoUploadIndicator");
+    if(box){box.hidden=true;box.classList.remove("success","error");}
   }
 
   async function submitRating(){
     if(!ratingToken){toast("Login dulu untuk kasih rating");return;}
     const stars=ratingMyStars;
     if(!stars){$("ratingStatus").textContent="Pilih bintang dulu.";return;}
+
     const review=$("ratingReview").value.trim();
     const hasPhoto=!!ratingPhotoData;
     const btn=$("ratingSubmit");
     btn.disabled=true;
+    hidePhotoUploadState();
 
     try{
-      let reviewId=ratingProfile.reviewId||"";
+      let reviewId=ratingProfile?.reviewId||"";
 
-      // FOTO DULU: buat row sementara/ID tanpa memasukkannya ke summary.
       if(hasPhoto){
-        $("ratingStatus").textContent="⏳ Menyiapkan penyimpanan foto…";
-        await ratingPost({action:"prepare",idToken:ratingToken});
-        const prepared=await waitForMe(x=>!!x.reviewId,10);
-        reviewId=prepared.me.reviewId;
+        $("ratingStatus").textContent="Menyiapkan upload foto…";
+        setPhotoUploadState("loading","Menyiapkan upload foto…");
+
+        const prep=await ratingPost({action:"prepare",idToken:ratingToken});
+        if(!prep||prep.ok===false||!prep.reviewId){
+          throw new Error((prep&&prep.error)||"Gagal menyiapkan upload foto.");
+        }
+        reviewId=prep.reviewId;
         ratingProfile.reviewId=reviewId;
 
-        $("ratingStatus").textContent="⏳ Mengupload foto ke Google Drive…";
-        await ratingPost({
-          action:"uploadPhoto",idToken:ratingToken,reviewId:reviewId,
-          photoData:ratingPhotoData,photoMime:ratingPhotoMime,photoName:ratingPhotoName
-        });
+        setPhotoUploadState("loading","Mengupload foto ke Google Drive…");
+        $("ratingStatus").textContent="Foto sedang diupload. Jangan tutup halaman…";
 
-        const uploaded=await waitForMe(x=>!!x.photoUrl,12);
-        if(!uploaded.me.photoUrl)throw new Error("Server belum mengonfirmasi foto.");
-        ratingProfile.photoUrl=uploaded.me.photoUrl;
-        $("ratingStatus").textContent="✓ Foto berhasil tersimpan. Mengirim rating & teks…";
-      }else{
-        $("ratingStatus").textContent="Mengirim rating & ulasan…";
+        const up=await ratingPost({
+          action:"uploadPhoto",
+          idToken:ratingToken,
+          reviewId:reviewId,
+          photoData:ratingPhotoData,
+          photoMime:ratingPhotoMime,
+          photoName:ratingPhotoName
+        });
+        if(!up||up.ok===false){
+          throw new Error((up&&up.error)||"Upload foto gagal.");
+        }
+
+        const afterPhoto=await ratingGet({action:"me",idToken:ratingToken});
+        if(!afterPhoto.ok)throw new Error(afterPhoto.error||"Tidak bisa memverifikasi upload foto.");
+        if(!afterPhoto.me.photoUrl)throw new Error("Foto belum tercatat di server.");
+
+        ratingProfile.photoUrl=afterPhoto.me.photoUrl;
+        setPhotoUploadState("success","Foto berhasil diupload dan sudah tersimpan di Google Drive ✓");
+        $("ratingStatus").textContent="Foto sudah aman. Sekarang menyimpan teks & rating…";
       }
 
-      // BARU SETELAH FOTO TERVERIFIKASI, simpan teks + rating.
-      await ratingPost({action:"rate",idToken:ratingToken,rating:stars,review:review});
-      const saved=await waitForMe(x=>Number(x.rating||0)===stars && String(x.review||"")===review,10);
-      ratingProfile.rating=Number(saved.me.rating||0);
-      ratingProfile.review=saved.me.review||"";
-      ratingProfile.displayName=saved.me.displayName||ratingProfile.displayName;
-      ratingProfile.photoUrl=saved.me.photoUrl||ratingProfile.photoUrl||"";
-      ratingProfile.reviewId=saved.me.reviewId||ratingProfile.reviewId;
+      const rateRes=await ratingPost({action:"rate",idToken:ratingToken,rating:stars,review:review});
+      if(!rateRes||rateRes.ok===false){
+        throw new Error((rateRes&&rateRes.error)||"Rating dan teks gagal disimpan.");
+      }
+
+      const me=await ratingGet({action:"me",idToken:ratingToken});
+      if(!me.ok)throw new Error(me.error||"Tidak bisa memverifikasi rating.");
+
+      ratingProfile.rating=Number(me.me.rating||0);
+      ratingProfile.review=me.me.review||"";
+      ratingProfile.displayName=me.me.displayName||ratingProfile.displayName;
+      ratingProfile.reviewId=me.me.reviewId||reviewId||"";
+      ratingProfile.photoUrl=me.me.photoUrl||ratingProfile.photoUrl||"";
 
       await refreshSummaryReliable(5);
-      clearPendingPhoto();
-      $("ratingPhotoRemoveSaved").hidden=!ratingProfile.photoUrl;
-      renderStars($("ratingStarsInput"),ratingProfile.rating);
 
-      if(ratingProfile.photoUrl){
+      if(hasPhoto){
+        clearPendingPhoto();
+        $("ratingPhotoRemoveSaved").hidden=!ratingProfile.photoUrl;
         $("ratingPhotoPreview").src=ratingProfile.photoUrl;
         $("ratingPhotoPreview").classList.add("show");
         $("ratingPhotoName").textContent="Foto tersimpan";
+        $("ratingStatus").textContent="✓ Foto, rating, dan teks berhasil tersimpan.";
+      }else{
+        $("ratingPhotoRemoveSaved").hidden=!ratingProfile.photoUrl;
+        $("ratingStatus").textContent="✓ Rating dan ulasan berhasil tersimpan.";
       }
-      $("ratingStatus").textContent="✓ Rating, ulasan, dan foto berhasil tersimpan.";
+
+      renderStars($("ratingStarsInput"),ratingProfile.rating);
     }catch(e){
-      $("ratingStatus").textContent=e.message||"Pengiriman gagal.";
-      toast(e.message||"Pengiriman gagal.");
+      const msg=e.message||"Gagal menyimpan ulasan.";
+      $("ratingStatus").textContent=msg;
+      if(hasPhoto && /foto|upload|drive/i.test(msg)){
+        setPhotoUploadState("error","Upload foto gagal: "+msg+". Teks belum dikirim.");
+      }
+      toast(msg);
     }finally{
       btn.disabled=false;
     }
   }
 
-  async function refreshSummaryReliable(attempts){
-    let last=null;
-    for(let i=0;i<(attempts||4);i++){
-      try{
-        const data=await ratingGet({action:"summary",idToken:ratingToken,limit:100});
-        if(data&&typeof data.average!=="undefined"){renderSummary(data);return data;}
-        last=new Error("Respons summary tidak valid.");
-      }catch(e){last=e;}
-      await new Promise(r=>setTimeout(r,500*(i+1)));
-    }
-    throw last||new Error("Gagal memuat daftar ulasan.");
-  }
-
   async function deleteReview(reviewId){
     if(!ratingToken){toast("Login dulu untuk menghapus ulasan");return;}
-    if(!reviewId){toast("ID ulasan tidak ditemukan.");return;}
+    if(!reviewId){toast("ID ulasan tidak ditemukan. Muat ulang halaman.");return;}
     if(!confirm("Hapus ulasan ini beserta fotonya? Tindakan ini tidak bisa dibatalkan."))return;
-    const buttons=document.querySelectorAll("[data-delete-id='"+CSS.escape(reviewId)+"']");
-    buttons.forEach(b=>{b.disabled=true;b.textContent="Menghapus…";});
-    $("ratingStatus").textContent="Menghapus ulasan…";
     try{
+      $("ratingStatus").textContent="Menghapus ulasan…";
       await ratingPost({action:"delete",idToken:ratingToken,reviewId:reviewId});
-      const summary=await refreshSummaryReliable(6);
-      const stillThere=(summary.list||[]).some(item=>String(item.id||"")===String(reviewId));
-      if(stillThere) throw new Error("Server belum mengonfirmasi penghapusan.");
-      if(ratingProfile && String(ratingProfile.reviewId||"")===String(reviewId)){
-        ratingProfile.rating=0;ratingProfile.review="";ratingProfile.photoUrl="";ratingProfile.reviewId="";
-        ratingMyStars=0; $("ratingReview").value="";
-        clearPendingPhoto(); $("ratingPhotoRemoveSaved").hidden=true;
-        renderStars($("ratingStarsInput"),0);
+      let deleted=false;
+      for(let i=0;i<5;i++){
+        const me=await ratingGet({action:"me",idToken:ratingToken});
+        if(me.ok&&!me.me.reviewId){
+          deleted=true;
+          ratingProfile.rating=0;ratingProfile.review="";ratingProfile.photoUrl="";ratingProfile.reviewId="";
+          ratingMyStars=0;break;
+        }
+        await new Promise(r=>setTimeout(r,500*(i+1)));
       }
-      $("ratingStatus").textContent="✓ Ulasan berhasil dihapus.";
+      await refreshSummaryReliable(5);
+      if(!deleted)throw new Error("Server belum mengonfirmasi penghapusan.");
+      $("ratingReview").value="";
+      $("ratingPhotoName").textContent="Belum memilih foto";
+      clearPendingPhoto();
+      $("ratingPhotoRemoveSaved").hidden=true;
+      renderStars($("ratingStarsInput"),0);
+      $("ratingStatus").textContent="Ulasan kamu sudah dihapus.";
       toast("Ulasan berhasil dihapus");
     }catch(e){
       $("ratingStatus").textContent=e.message||"Gagal menghapus ulasan.";
       toast(e.message||"Gagal menghapus ulasan.");
-    }finally{
-      buttons.forEach(b=>{b.disabled=false;b.textContent="Hapus ulasan";});
     }
   }
 
@@ -1432,7 +1475,8 @@ html[data-theme="moon"] .theme-btn.active{color:#241608}
     if(!ratingToken||!name.trim())return;
     try{
       await ratingPost({action:"setName",idToken:ratingToken,displayName:name.trim()});
-      const me=await waitForMe(x=>String(x.displayName||"")===name.trim(),8);
+      const me=await ratingGet({action:"me",idToken:ratingToken});
+      if(!me.ok)throw new Error(me.error||"Gagal menyimpan nama");
       ratingProfile.displayName=me.me.displayName||name.trim();
       $("ratingDisplayName").textContent=ratingProfile.displayName;
       await refreshSummaryReliable(4);
@@ -1440,27 +1484,16 @@ html[data-theme="moon"] .theme-btn.active{color:#241608}
     }catch(e){toast(e.message||"Gagal menyimpan nama. Coba lagi.");}
   }
 
-  function initGoogleButton(retry=0){
-    if(!RATING_READY)return;
-    const form=$("ratingSubmitForm");
-    if(form)form.action=RATING_CONFIG.apiUrl;
-    if(window.google?.accounts?.id){
-      try{
-        google.accounts.id.initialize({client_id:RATING_CONFIG.clientId,callback:handleGoogleCredential,auto_select:false});
-        $("gsiButton").innerHTML="";
-        google.accounts.id.renderButton($("gsiButton"),{theme:"outline",size:"large",shape:"pill",text:"signin_with",locale:"id",width:300});
-        return;
-      }catch(err){
-        console.warn("Google Identity Services belum siap:",err);
-      }
-    }
-    if(retry<12)setTimeout(()=>initGoogleButton(retry+1),500);
-  }
-
   function initRating(){
     fetchSummary();
-    if(!RATING_READY){$("ratingNotConfigured").hidden=false;return;}
-    initGoogleButton();
+    if(!RATING_READY){
+      $("ratingNotConfigured").hidden=false;
+      return;
+    }
+    if(window.google?.accounts?.id){
+      google.accounts.id.initialize({client_id:RATING_CONFIG.clientId,callback:handleGoogleCredential,auto_select:false});
+      google.accounts.id.renderButton($("gsiButton"),{theme:"outline",size:"large",shape:"pill",text:"signin_with",locale:"id"});
+    }
     const savedToken=sessionStorage.getItem("x4-rating-token");
     if(savedToken){
       const payload=decodeJwt(savedToken);
@@ -1484,7 +1517,8 @@ html[data-theme="moon"] .theme-btn.active{color:#241608}
     $("ratingLogout").addEventListener("click",ratingLogout);
     $("editNameBtn").addEventListener("click",function(){
       $("ratingNameInput").value=ratingProfile.displayName||"";
-      $("ratingNameEdit").hidden=false;$("ratingNameInput").focus();
+      $("ratingNameEdit").hidden=false;
+      $("ratingNameInput").focus();
     });
     $("ratingNameCancel").addEventListener("click",function(){$("ratingNameEdit").hidden=true;});
     $("ratingNameSave").addEventListener("click",function(){
