@@ -913,7 +913,7 @@ html[data-theme="moon"] .theme-btn.active{color:#241608}
      dan section rating hanya menampilkan rata-rata (kosong dulu). */
   const RATING_CONFIG={
     clientId:"893588662175-o4vkqhi4hvvrac5cb9t8l17hgl260lf3.apps.googleusercontent.com",
-    apiUrl:"https://script.google.com/macros/s/AKfycbw8bwMtHpb6y90Or7dY8nXQ6joSaDPmXqHUkpGbuqCwS9oIzVeYTIoaxVTKVeAum0AU/exec"
+    apiUrl:"https://script.google.com/macros/s/AKfycbxNEQB0Kxf3IFhCrBFE21kszeZkcFhaItSc31mFIjlJGmgBVJYGBwn67jitXBG-G1cP/exec"
   };
   const RATING_READY=!RATING_CONFIG.clientId.startsWith("GANTI_")&&!RATING_CONFIG.apiUrl.startsWith("GANTI_");
 
@@ -1106,15 +1106,57 @@ html[data-theme="moon"] .theme-btn.active{color:#241608}
       const frame=$("ratingSubmitFrame");
       const form=$("ratingSubmitForm");
       if(!frame||!form){reject(new Error("Form rating tidak ditemukan."));return;}
+
       let finished=false;
-      const timeout=setTimeout(()=>{cleanup();reject(new Error("Server terlalu lama merespons."));},30000);
-      function cleanup(){clearTimeout(timeout);frame.removeEventListener("load",onLoad);}
-      function onLoad(){
-        if(finished)return;
-        finished=true;cleanup();
-        setTimeout(()=>resolve({ok:true}),250);
+      const timeout=setTimeout(()=>{
+        cleanup();
+        reject(new Error("Server terlalu lama merespons."));
+      },40000);
+
+      function cleanup(){
+        clearTimeout(timeout);
+        window.removeEventListener("message",onMessage);
+        frame.removeEventListener("load",onLoad);
       }
+
+      function finish(result){
+        if(finished)return;
+        finished=true;
+        cleanup();
+        resolve(result);
+      }
+
+      function fail(err){
+        if(finished)return;
+        finished=true;
+        cleanup();
+        reject(err instanceof Error?err:new Error(String(err)));
+      }
+
+      function onMessage(event){
+        const d=event.data;
+        if(!d || d.source!=="bazar-rating") return;
+        if(d.ok===true){
+          finish({
+            ok:true,
+            summary:d.summary||null,
+            me:d.me||null,
+            reviewId:d.reviewId||"",
+            photoUrl:d.photoUrl||""
+          });
+        }else{
+          fail(new Error(d.error||"Server gagal memproses permintaan."));
+        }
+      }
+
+      // Fallback only: older deployments may not postMessage.
+      // The following load does NOT immediately claim success; the timeout
+      // lets the client report a real server error instead.
+      function onLoad(){}
+
+      window.addEventListener("message",onMessage);
       frame.addEventListener("load",onLoad);
+
       $("rfAction").value=payload.action||"";
       $("rfToken").value=payload.idToken||"";
       $("rfRating").value=payload.rating||"";
@@ -1124,7 +1166,12 @@ html[data-theme="moon"] .theme-btn.active{color:#241608}
       $("rfPhotoMime").value=payload.photoMime||"";
       $("rfPhotoName").value=payload.photoName||"";
       $("rfReviewId").value=payload.reviewId||"";
-      try{form.submit();}catch(err){cleanup();reject(err);}
+
+      try{
+        form.submit();
+      }catch(err){
+        fail(err);
+      }
     });
   }
 
@@ -1482,6 +1529,28 @@ html[data-theme="moon"] .theme-btn.active{color:#241608}
       await refreshSummaryReliable(4);
       toast("Nama tampilan diperbarui");
     }catch(e){toast(e.message||"Gagal menyimpan nama. Coba lagi.");}
+  }
+
+  // Compatibility helper: V4 calls this after delete/upload/name changes.
+  // It was missing in the original file, causing "refreshSummaryReliable is not defined".
+  async function refreshSummaryReliable(retries=5){
+    let lastErr=null;
+    for(let i=0;i<Math.max(1,retries);i++){
+      try{
+        const params={action:"summary"};
+        if(ratingToken) params.idToken=ratingToken;
+        const data=await ratingGet(params);
+        if(data && typeof data==="object"){
+          renderSummary(data);
+          return data;
+        }
+      }catch(e){
+        lastErr=e;
+      }
+      if(i<retries-1) await new Promise(r=>setTimeout(r,500*(i+1)));
+    }
+    if(lastErr) throw lastErr;
+    return null;
   }
 
   function initRating(){
