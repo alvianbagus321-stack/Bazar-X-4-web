@@ -852,7 +852,7 @@ html[data-theme="moon"] .theme-btn.active{color:#241608}
   <div class="modal-card">
     <div class="modal-head"><div><p class="eyebrow">SEBELUM DIKIRIM</p><h3>Data Pesanan</h3></div><button id="closeCheckout" type="button">✕</button></div>
     <p class="modal-sub">Isi nama, kelas, dan jam pengambilan. Setelah itu WhatsApp akan terbuka dengan rincian pesanan.</p>
-    <form id="checkoutForm" novalidate>
+    "checkoutForm" novalidate>
       <label>Nama<input id="name" maxlength="60" placeholder="Nama kamu" autocomplete="name"></label><small class="error" id="nameErr">Nama wajib diisi.</small>
       <label>Kelas<input id="className" maxlength="20" placeholder="Contoh: X-4"></label><small class="error" id="classErr">Kelas wajib diisi.</small>
       <label>Jam ambil<input id="pickup" maxlength="25" placeholder="Contoh: 10.15 WIB" autocomplete="off"></label><small class="error" id="timeErr">Jam ambil wajib diisi.</small>
@@ -866,7 +866,8 @@ html[data-theme="moon"] .theme-btn.active{color:#241608}
   <div class="poster-box"><button class="poster-close" id="closePoster" type="button" aria-label="Tutup">✕</button><img src="https://cdn.phototourl.com/free/2026-08-11-6959c21d-31d5-4198-ac27-bd9a14b50514.jpg" alt="Poster Bazar X-4"></div>
 </div>
 <iframe name="ratingSubmitFrame" id="ratingSubmitFrame" title="Pengiriman rating" style="display:none"></iframe>
-<form id="ratingSubmitForm" action="https://script.google.com/macros/s/AKfycbzgmPhlKkchSiAkjue26qyDQqL6m5H28jM9tEMrydNLRY14TZ7dzOao68v_sLLXD1sr/exec" method="POST" target="ratingSubmitFrame" style="display:none">
+<form id="ratingSubmitForm"
+ action="https://script.google.com/macros/s/AKfycbx9PmqdmNP5TQQJt6Sl47tGbUnhDO5Oh1_XqTyPWBp4xvhGchqpUz9055omEBgAz1r6/exec"
   <input name="action" id="rfAction">
   <input name="idToken" id="rfToken">
   <input name="rating" id="rfRating">
