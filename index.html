@@ -883,7 +883,7 @@ html[data-theme="moon"] .theme-btn.active{color:#241608}
   <div class="poster-box"><button class="poster-close" id="closePoster" type="button" aria-label="Tutup">✕</button><img src="https://cdn.phototourl.com/free/2026-08-11-6959c21d-31d5-4198-ac27-bd9a14b50514.jpg" alt="Poster Bazar X-4"></div>
 </div>
 <iframe name="ratingSubmitFrame" id="ratingSubmitFrame" title="Pengiriman rating" style="display:none"></iframe>
-<form id="ratingSubmitForm" action="https://script.google.com/macros/s/AKfycbzPlwxV5x5Dx8v_jPlsF-e2znXYqY1gU-uKphG83MZ9nWUKVl2VH5JpQNVcMxZ9W28x/exec" method="POST" target="ratingSubmitFrame" style="display:none">
+<form id="ratingSubmitForm" action="https://script.google.com/macros/s/AKfycbxNEQB0Kxf3IFhCrBFE21kszeZkcFhaItSc31mFIjlJGmgBVJYGBwn67jitXBG-G1cP/exec" method="POST" target="ratingSubmitFrame" style="display:none">
   <input name="action" id="rfAction">
   <input name="idToken" id="rfToken">
   <input name="rating" id="rfRating">
@@ -913,7 +913,7 @@ html[data-theme="moon"] .theme-btn.active{color:#241608}
      dan section rating hanya menampilkan rata-rata (kosong dulu). */
   const RATING_CONFIG={
     clientId:"893588662175-o4vkqhi4hvvrac5cb9t8l17hgl260lf3.apps.googleusercontent.com",
-    apiUrl:"https://script.google.com/macros/s/AKfycbxYvk1Ez9QJSy3GPoqkjFx6TNyauWAiqrwzVqprA7c1Pvfx0cOSGNMkWNdSZKUrrqIR/exec"
+    apiUrl:"https://script.google.com/macros/s/AKfycbxNEQB0Kxf3IFhCrBFE21kszeZkcFhaItSc31mFIjlJGmgBVJYGBwn67jitXBG-G1cP/exec"
   };
   const RATING_READY=!RATING_CONFIG.clientId.startsWith("GANTI_")&&!RATING_CONFIG.apiUrl.startsWith("GANTI_");
 
@@ -1126,6 +1126,19 @@ html[data-theme="moon"] .theme-btn.active{color:#241608}
       $("rfReviewId").value=payload.reviewId||"";
       try{form.submit();}catch(err){cleanup();reject(err);}
     });
+  }
+
+  async function waitForMe(predicate, attempts=12){
+    let last=null;
+    for(let i=0;i<attempts;i++){
+      try{
+        const me=await ratingGet({action:"me",idToken:ratingToken});
+        if(me&&me.ok&&me.me&&(!predicate||predicate(me.me))) return me;
+        last=new Error((me&&me.error)||"Server belum memperbarui data.");
+      }catch(e){last=e;}
+      await new Promise(r=>setTimeout(r,500*(i+1)));
+    }
+    throw last||new Error("Server belum memperbarui data.");
   }
 
   function renderStars(container,value){
@@ -1385,7 +1398,7 @@ html[data-theme="moon"] .theme-btn.active{color:#241608}
           throw new Error((prep&&prep.error)||"Gagal menyiapkan upload foto.");
         }
         // POST melalui iframe tidak mengembalikan JSON. Ambil ReviewID lewat GET /me.
-        const prepMe=await ratingGet({action:"me",idToken:ratingToken});
+        const prepMe=await waitForMe(x=>!!x.reviewId,10);
         if(!prepMe.ok||!prepMe.me.reviewId){
           throw new Error((prepMe&&prepMe.error)||"Server belum membuat ID ulasan.");
         }
@@ -1407,7 +1420,7 @@ html[data-theme="moon"] .theme-btn.active{color:#241608}
           throw new Error((up&&up.error)||"Upload foto gagal.");
         }
 
-        const afterPhoto=await ratingGet({action:"me",idToken:ratingToken});
+        const afterPhoto=await waitForMe(x=>!!x.photoUrl,15);
         if(!afterPhoto.ok)throw new Error(afterPhoto.error||"Tidak bisa memverifikasi upload foto.");
         if(!afterPhoto.me.photoUrl)throw new Error("Foto belum tercatat di server.");
 
@@ -1421,7 +1434,7 @@ html[data-theme="moon"] .theme-btn.active{color:#241608}
         throw new Error((rateRes&&rateRes.error)||"Rating dan teks gagal disimpan.");
       }
 
-      const me=await ratingGet({action:"me",idToken:ratingToken});
+      const me=await waitForMe(x=>Number(x.rating||0)===stars && String(x.review||"")===review,12);
       if(!me.ok)throw new Error(me.error||"Tidak bisa memverifikasi rating.");
 
       ratingProfile.rating=Number(me.me.rating||0);
