@@ -1,1470 +1,991 @@
-<!doctype html>
-<html lang="id" data-theme="forest">
-<head>
-<!-- Bazar X-4: Google Rating configured for GitHub Pages + Apps Script Web App -->
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#0b241d">
-<meta name="description" content="Bazar Jogja Kelas X-4 SMAN 1 Babat">
-<title>Bazar Jogja X-4 · SMAN 1 Babat</title>
-
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,500;1,600&family=Playfair+Display:ital,wght@0,500;0,600;0,700;0,800;1,600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<script src="https://accounts.google.com/gsi/client" defer></script>
-
-<style>
-:root{
-  --page:#071a15;
-  --page-2:#0d251e;
-  --paper:#edf5ef;
-  --paper-2:#dcebe1;
-  --ink:#10241d;
-  --muted:#4d6b5d;
-  --green:#0d4a3b;
-  --green-2:#176a54;
-  --brick:#0f5a47;
-  --brick-2:#2d8068;
-  --gold:#9fc5a9;
-  --gold-2:#d8f0dc;
-  --line:rgba(16,36,29,.14);
-  --white-line:rgba(220,242,228,.13);
-  --hero-shadow:rgba(0,0,0,.48);
-  --card-shadow:0 24px 65px rgba(2,25,18,.22);
-  --glass:rgba(13,52,42,.62);
-  --glow:rgba(125,214,169,.16);
-}
-
-html[data-theme="night"]{
-  --page:#081c16;
-  --page-2:#0d2a21;
-  --paper:#edf6f0;
-  --paper-2:#dcece2;
-  --ink:#10261e;
-  --muted:#557267;
-  --green:#0d4d3c;
-  --green-2:#186b55;
-  --brick:#12614b;
-  --brick-2:#2a8669;
-  --gold:#9bc5a4;
-  --gold-2:#d9f1df;
-  --line:rgba(16,38,30,.14);
-  --white-line:rgba(220,245,231,.14);
-  --card-shadow:0 26px 72px rgba(0,0,0,.38);
-  --glass:rgba(9,38,30,.7);
-  --glow:rgba(110,220,168,.16);
-}
-
-html[data-theme="dusk"]{
-  --page:#0a2019;
-  --page-2:#103329;
-  --paper:#e6f0ea;
-  --paper-2:#cfe2d6;
-  --ink:#10261e;
-  --muted:#526d61;
-  --green:#104936;
-  --green-2:#1b7156;
-  --brick:#165e48;
-  --brick-2:#2d8367;
-  --gold:#8ebaa0;
-  --gold-2:#cce8d4;
-  --line:rgba(16,38,30,.14);
-  --white-line:rgba(224,245,233,.15);
-  --card-shadow:0 24px 65px rgba(0,0,0,.30);
-  --glass:rgba(16,53,43,.68);
-  --glow:rgba(104,203,158,.15);
-}
-
-html[data-theme="forest"]{
-  --page:#061a14; --page-2:#0a2b21; --paper:#0d3a2e; --paper-2:#124b3b;
-  --ink:#eaf7ef; --muted:#a7c9b8; --green:#0b4a3a; --green-2:#1b7558;
-  --brick:#17644c; --brick-2:#2d8a6b; --gold:#76c69b; --gold-2:#bcebd0;
-  --line:rgba(207,239,220,.16); --white-line:rgba(219,244,230,.16);
-  --card-shadow:0 30px 78px rgba(0,0,0,.48); --glass:rgba(6,34,26,.78); --glow:rgba(79,214,157,.19);
-}
-
-html[data-theme="sage"]{
-  --page:#d7e7dd; --page-2:#c4dbce; --paper:#f3f8f4; --paper-2:#e0eee5;
-  --ink:#102a20; --muted:#587267; --green:#1a5a45; --green-2:#2f7b60;
-  --brick:#2a7158; --brick-2:#4d9677; --gold:#79ad90; --gold-2:#c6e1d0;
-  --line:rgba(16,42,32,.13); --white-line:rgba(16,42,32,.11);
-  --card-shadow:0 22px 58px rgba(27,69,51,.18); --glass:rgba(243,248,244,.72); --glow:rgba(85,167,130,.16);
-}
-
-html[data-theme="forest"] .hero{background:linear-gradient(145deg,#061a14,#0b3025 58%,#071f18)}
-html[data-theme="forest"] .quick{background:linear-gradient(90deg,#082f24,#0d5541 50%,#082f24)}
-html[data-theme="forest"] .menu-section,
-html[data-theme="forest"] .poster-section{background:linear-gradient(180deg,#0b2f24,#08271e)}
-html[data-theme="forest"] .package-section{background:linear-gradient(180deg,#0e382b,#0a2a21)}
-html[data-theme="forest"] .menu-card,
-html[data-theme="forest"] .package-card,
-html[data-theme="forest"] .poster-frame,
-html[data-theme="forest"] .drawer,
-html[data-theme="forest"] .modal-card,
-html[data-theme="forest"] .poster-box{background:#103f31;color:var(--ink);border-color:rgba(194,235,211,.16)}
-html[data-theme="forest"] .menu-photo,
-html[data-theme="forest"] .package-copy,
-html[data-theme="forest"] .summary,
-html[data-theme="forest"] input{background:#15503e;color:var(--ink)}
-html[data-theme="forest"] .menu-card p,
-html[data-theme="forest"] .package-card p,
-html[data-theme="forest"] .section-note,
-html[data-theme="forest"] .cart-name small,
-html[data-theme="forest"] .empty{color:var(--muted)}
-html[data-theme="forest"] .step{background:#15503e;color:var(--ink);border-color:rgba(194,235,211,.18)}
-html[data-theme="forest"] .step:hover{background:#238463;color:#fff}
-html[data-theme="forest"] .featured-label,
-html[data-theme="forest"] .package-photo b{background:#78cfa0;color:#062017}
-html[data-theme="forest"] .hero-poster{background:rgba(18,67,53,.82);border-color:rgba(195,238,214,.2)}
-html[data-theme="forest"] .map-card{background:#123e31}
-html[data-theme="forest"] .contact{background:linear-gradient(135deg,#176b52,#0b4d3b 65%,#08372b)}
-html[data-theme="forest"] .story{background:linear-gradient(160deg,#0b382b,#061a14)}
-html[data-theme="forest"] .location{background:linear-gradient(145deg,#0b4a38,#072e24)}
-html[data-theme="forest"] .footer{background:#04140f}
-html[data-theme="forest"] .theme-switcher{background:rgba(8,35,27,.62)}
-html[data-theme="forest"] .theme-btn.active{background:linear-gradient(135deg,#bcebd0,#70c99a);color:#062017;box-shadow:0 7px 22px rgba(79,214,157,.28)}
-html[data-theme="forest"] .school-logo,
-html[data-theme="forest"] .footer-logo{background:#123e31;border-color:rgba(188,235,208,.28)}
-html[data-theme="forest"] .mobile-menu{background:linear-gradient(165deg,#061a14,#0d3a2e)}
-html[data-theme="forest"] .mobile-theme button.active{background:#78cfa0;color:#062017}
-html[data-theme="forest"] .cart-hint{background:#103f31;color:var(--ink)}
-html[data-theme="forest"] .toast{background:#d7f1e1;color:#08251b}
-
-html[data-theme="sage"] .hero{background:#17362b}
-html[data-theme="sage"] .story{background:linear-gradient(160deg,#244b3c,#152e25)}
-html[data-theme="sage"] .footer{background:#0d2119}
-
-html[data-theme="sage"] .brand-text strong{color:var(--ink)}
-html[data-theme="sage"] .brand-text small{color:rgba(16,42,32,.6)}
-html[data-theme="sage"] .nav-links{color:rgba(16,42,32,.74)}
-html[data-theme="sage"] .nav-links a:hover{color:var(--green-2)}
-html[data-theme="sage"] .menu-toggle{color:var(--ink);border-color:var(--white-line)}
-html[data-theme="sage"] .theme-btn{color:rgba(16,42,32,.55)}
-html[data-theme="sage"] .theme-btn.active{color:#102a20}
-
-html[data-theme="day"]{
-  --page:#dcebe2;
-  --page-2:#cddfd4;
-  --paper:#f5fbf7;
-  --paper-2:#e5f1e9;
-  --ink:#10241d;
-  --muted:#587166;
-  --green:#165541;
-  --green-2:#1f7057;
-  --brick:#17614c;
-  --brick-2:#2a8166;
-  --gold:#7eaa8d;
-  --gold-2:#b8d7c1;
-  --line:rgba(16,36,29,.13);
-  --white-line:rgba(16,36,29,.12);
-  --card-shadow:0 20px 55px rgba(25,65,48,.16);
-  --glass:rgba(245,251,247,.68);
-  --glow:rgba(60,150,111,.14);
-}
-
-html[data-theme="day"] .brand-text strong{color:var(--ink)}
-html[data-theme="day"] .brand-text small{color:rgba(16,36,29,.6)}
-html[data-theme="day"] .nav-links{color:rgba(16,36,29,.74)}
-html[data-theme="day"] .nav-links a:hover{color:var(--green-2)}
-html[data-theme="day"] .menu-toggle{color:var(--ink);border-color:var(--white-line)}
-html[data-theme="day"] .theme-btn{color:rgba(16,36,29,.55)}
-html[data-theme="day"] .theme-btn.active{color:#10241d}
-
-/* ================= MOON LUXE (tema tambahan) =================
-   Krem hangat + emas + aksen bata di atas hijau zamrud dalam —
-   kontras hangat berbeda dari 5 tema hijau lain, tetap elegan & mewah. */
-html[data-theme="moon"]{
-  --page:#0f2b21;
-  --page-2:#183c2d;
-  --paper:#f4e9d2;
-  --paper-2:#e8d7ae;
-  --ink:#241608;
-  --muted:#6b4d32;
-  --green:#166049;
-  --green-2:#1f8060;
-  --brick:#c9602f;
-  --brick-2:#e58a5b;
-  --gold:#dab568;
-  --gold-2:#f0d18f;
-  --line:rgba(36,22,8,.16);
-  --white-line:rgba(255,255,255,.14);
-  --card-shadow:0 28px 70px rgba(2,16,11,.5),0 8px 20px rgba(0,0,0,.32);
-  --glass:rgba(15,43,33,.62);
-  --glow:rgba(218,181,104,.2);
-}
-*{box-sizing:border-box}
-html{scroll-behavior:smooth;overflow-x:hidden;width:100%}
-body{margin:0;width:100%;max-width:100vw;background:var(--page);color:var(--ink);font-family:"Plus Jakarta Sans",sans-serif;overflow-x:hidden;transition:background .3s,color .3s}
-body:before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;opacity:.045;background-image:radial-gradient(circle,var(--gold) 1.2px,transparent 1.6px);background-size:30px 30px}
-body.no-scroll{overflow:hidden}
-a{color:inherit;text-decoration:none}
-button,input{font:inherit}
-button{cursor:pointer}
-img{display:block;max-width:100%}
-h1,h2,h3,h4{font-family:"Lora",serif}
-.wrap{width:min(1160px,calc(100% - 34px));margin:auto}
-.eyebrow{margin:0;color:var(--brick-2);font-size:.64rem;font-weight:800;letter-spacing:.18em}
-.section{padding:88px 0}
-.section-head{display:flex;align-items:end;justify-content:space-between;gap:28px;margin-bottom:30px}
-.section-head h2{font-size:clamp(2.1rem,4.9vw,3.75rem);line-height:.98;letter-spacing:-.03em;margin:8px 0 0;font-weight:600}
-.section-note{max-width:390px;margin:0;color:var(--muted);font-size:.78rem;line-height:1.75}
-
-/* ---------- header ---------- */
-.header{position:sticky;top:0;z-index:80;background:color-mix(in srgb,var(--page) 90%,transparent);backdrop-filter:blur(16px);border-bottom:1px solid var(--white-line)}
-.nav{min-height:68px;display:flex;align-items:center;justify-content:space-between;gap:18px}
-.brand{display:flex;align-items:center;gap:10px;min-width:200px}
-.school-logo{width:38px;height:38px;border-radius:50%;background:var(--paper);border:1px solid var(--gold);display:grid;place-items:center;overflow:hidden}
-.school-logo img{width:31px;height:31px;object-fit:contain}
-.brand-text strong{display:block;color:var(--paper);font-family:"Lora",serif;font-size:.78rem;letter-spacing:.03em}
-.brand-text small{display:block;color:rgba(255,255,255,.48);font-size:.54rem;margin-top:3px}
-.nav-links{display:flex;gap:22px;color:rgba(255,255,255,.72);font-size:.7rem;font-weight:800}
-.nav-links a:hover{color:var(--gold-2)}
-.nav-tools{display:flex;align-items:center;gap:7px}
-.theme-switcher{display:flex;align-items:center;gap:3px;padding:4px;border:1px solid var(--white-line);border-radius:999px;background:rgba(0,0,0,.13)}
-.theme-btn{width:30px;height:30px;border:0;border-radius:50%;background:transparent;color:rgba(255,255,255,.72);display:grid;place-items:center;font-size:.78rem;transition:transform .2s ease,background .2s ease,box-shadow .2s ease}
-.theme-btn:hover{transform:translateY(-1px) scale(1.04);background:rgba(255,255,255,.08)}
-.theme-btn.active{background:var(--gold);color:#12251d;box-shadow:0 0 0 2px rgba(255,255,255,.08),0 7px 20px rgba(79,214,157,.18)}
-.theme-switcher::before{content:"✦";margin:0 1px 0 3px;color:var(--gold);font-size:.56rem;opacity:.7}
-.menu-toggle{display:none;width:35px;height:35px;border-radius:8px;border:1px solid var(--white-line);background:transparent;color:#fff;font-size:1.1rem}
-.cart-top{border:0;border-radius:999px;background:var(--brick);color:#fff;padding:8px 10px;display:flex;align-items:center;gap:6px;font-size:.67rem;font-weight:900}
-.cart-top b{min-width:19px;height:19px;border-radius:50%;background:#fff;color:var(--brick);display:grid;place-items:center;font-size:.62rem}
-.cart-top.pop,.floating-cart.pop{animation:cartPop .5s ease}
-@keyframes cartPop{45%{transform:scale(1.12) rotate(-2deg)}100%{transform:none}}
-
-/* ---------- hero ---------- */
-.hero{position:relative;min-height:690px;overflow:hidden;color:#fff;background:#0b241d}
-.hero-bg{position:absolute;inset:0;background-image:linear-gradient(90deg,rgba(4,17,14,.9) 0%,rgba(4,17,14,.68) 48%,rgba(4,17,14,.25) 100%),url("https://cdn.phototourl.com/free/2026-08-11-5821cad1-f5bc-4c88-b112-d494406828ac.jpg");background-size:cover;background-position:center;transform:scale(1.02)}
-.hero-batik{position:absolute;right:-120px;top:-80px;width:440px;height:440px;opacity:.09;background:url("https://cdn.phototourl.com/free/2026-08-11-11b3faf9-d9a2-46bb-a9b4-5a4a8f630c89.png") center/cover;border-radius:50%}
-.hero-inner{position:relative;z-index:2;padding:82px 0 70px}
-.hero-grid{display:grid;grid-template-columns:1.03fr .6fr;gap:62px;align-items:center}
-.hero-copy h1{font-size:clamp(3.3rem,7.8vw,6.8rem);line-height:.9;letter-spacing:-.045em;margin:12px 0 20px;font-weight:600}
-.hero-copy h1 em{font-style:italic;color:var(--gold-2);font-weight:600}
-.hero-lead{max-width:570px;color:rgba(255,248,234,.8);font-size:.88rem;line-height:1.8;margin:0}
-.hero-mini{display:inline-flex;align-items:center;gap:9px;border:1px solid rgba(255,255,255,.24);background:rgba(0,0,0,.15);padding:7px 10px;font-size:.56rem;font-weight:900;letter-spacing:.12em}
-.hero-actions{display:flex;gap:9px;flex-wrap:wrap;margin:25px 0 21px}
-.btn{border:0;border-radius:7px;padding:12px 16px;font-size:.64rem;font-weight:900;letter-spacing:.07em;display:inline-flex;align-items:center;justify-content:center;gap:8px;transition:.2s}
-.btn-primary{background:var(--brick);color:#fff}.btn-primary:hover{transform:translateY(-2px);box-shadow:0 12px 25px rgba(0,0,0,.22)}
-.btn-outline-light{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.32);color:#fff}.btn-outline-light:hover{background:rgba(255,255,255,.15)}
-.hero-meta{display:flex;align-items:center;gap:10px;color:rgba(255,255,255,.63);font-size:.62rem;font-weight:800;letter-spacing:.08em}
-.hero-meta i{width:4px;height:4px;border-radius:50%;background:var(--gold)}
-.hero-visual{position:relative}
-.hero-poster{background:var(--paper);padding:10px;box-shadow:0 30px 75px rgba(0,0,0,.38);transform:rotate(1.7deg)}
-.hero-poster img{width:100%;aspect-ratio:3/4;object-fit:cover}
-.hero-badge{position:absolute;left:-20px;bottom:24px;background:var(--brick);padding:11px 14px;color:#fff;box-shadow:0 12px 25px rgba(0,0,0,.28);transform:rotate(-3deg)}
-.hero-badge small{display:block;font-size:.52rem;font-weight:800;letter-spacing:.12em;opacity:.72}
-.hero-badge strong{display:block;font-family:"Lora",serif;font-size:1.2rem;margin-top:2px}
-
-/* ---------- quick bar ---------- */
-.quick{background:var(--green);color:#fff;border-top:1px solid rgba(255,255,255,.06);border-bottom:1px solid rgba(255,255,255,.06)}
-.quick-grid{display:grid;grid-template-columns:repeat(4,1fr)}
-.quick-item{min-height:55px;padding:15px 13px;display:flex;align-items:center;justify-content:center;gap:10px;border-right:1px solid rgba(255,255,255,.11)}
-.quick-item:last-child{border-right:0}.quick-item span{font-size:.96rem}.quick-item b,.quick-item small{display:block}.quick-item b{font-size:.62rem}.quick-item small{font-size:.55rem;color:rgba(255,255,255,.53);margin-top:3px}
-
-/* ---------- menu ---------- */
-.menu-section{background:var(--paper)}
-.menu-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
-.menu-card{
-  position:relative;overflow:hidden;background:var(--paper);
-  border:1px solid var(--line);box-shadow:var(--card-shadow);transition:transform .25s,box-shadow .25s;
-}
-.menu-card:hover{transform:translateY(-5px);box-shadow:0 28px 62px rgba(0,0,0,.25)}
-.menu-photo{position:relative;padding:10px;background:var(--paper-2)}
-.menu-photo img{width:100%;aspect-ratio:1.18/1;object-fit:cover}
-.menu-num{position:absolute;left:19px;bottom:18px;width:30px;height:30px;border-radius:50%;background:var(--green);color:#fff;display:grid;place-items:center;border:2px solid var(--paper);font-size:.61rem;font-weight:900}
-.featured-label{position:absolute;left:18px;top:18px;z-index:2;background:var(--gold);color:#2b1b0e;padding:6px 8px;font-size:.53rem;font-weight:900;letter-spacing:.08em}
-.menu-body{padding:17px 18px 19px;color:var(--ink)}
-.menu-head{display:flex;align-items:start;justify-content:space-between;gap:10px}
-.menu-head h3{font-size:1.18rem;line-height:1.04;margin:0;font-weight:700;color:var(--ink)}
-.menu-head strong{font-family:"Plus Jakarta Sans",sans-serif;font-size:.78rem;color:var(--ink);white-space:nowrap}
-.menu-body p{min-height:44px;margin:9px 0 15px;color:var(--muted);font-size:.73rem;line-height:1.6}
-.menu-bottom{display:flex;align-items:center;justify-content:space-between;gap:8px}
-.stepper{display:flex;align-items:center;gap:7px}
-.step{width:30px;height:30px;border-radius:50%;border:1px solid var(--line);background:var(--paper-2);color:var(--ink);font-weight:900}
-.step:hover{background:var(--green);color:#fff}
-.stepper span{min-width:16px;text-align:center;color:var(--ink);font-weight:900}
-.add{border:0;border-radius:6px;background:var(--brick);color:#fff;padding:9px 10px;font-size:.58rem;font-weight:900}
-.add:hover{background:var(--brick-2)}
-
-/* ---------- package ---------- */
-.package-section{background:var(--paper-2);position:relative;overflow:hidden}
-.package-section:after{content:"";position:absolute;inset:0;pointer-events:none;opacity:.045;background:url("https://cdn.phototourl.com/free/2026-08-11-11b3faf9-d9a2-46bb-a9b4-5a4a8f630c89.png") center/390px repeat}
-.package-section .wrap{position:relative;z-index:1}
-.package-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px}
-.package-card{display:grid;grid-template-columns:.95fr 1.05fr;overflow:hidden;background:var(--paper);border:1px solid var(--line);box-shadow:var(--card-shadow)}
-.package-photo{position:relative;min-height:290px}.package-photo img{width:100%;height:100%;object-fit:cover}.package-photo b{position:absolute;right:12px;top:12px;padding:7px 9px;background:var(--gold);color:#25170c;font-size:.62rem}
-.package-copy{padding:22px 21px;display:flex;flex-direction:column;justify-content:center;color:var(--ink)}
-.package-copy small{color:var(--brick-2);font-size:.54rem;font-weight:900;letter-spacing:.15em}
-.package-copy h3{font-size:1.65rem;line-height:.95;margin:7px 0 9px;font-weight:600}
-.package-copy p{font-size:.72rem;line-height:1.6;color:var(--muted);margin:0 0 13px}
-.package-price{font-size:.98rem;font-weight:900;margin-bottom:11px;color:var(--ink)}
-.package-add{border:0;background:var(--green);color:#fff;border-radius:6px;padding:10px 11px;font-size:.58rem;font-weight:900;letter-spacing:.03em}
-
-/* ---------- story ---------- */
-.story{background:linear-gradient(160deg,#132922,#0a1712);color:#fff}
-.story-grid{display:grid;grid-template-columns:.86fr 1.14fr;gap:48px;align-items:center}
-.story-image{position:relative}.story-image img{width:100%;height:440px;object-fit:cover;box-shadow:var(--card-shadow)}.story-image:after{content:"";position:absolute;inset:16px -16px -16px 16px;border:1px solid var(--gold);z-index:-1}
-.story-copy h2{font-size:clamp(2.55rem,5vw,4.5rem);line-height:.93;margin:8px 0 16px;font-weight:600}
-.story-copy p{max-width:530px;color:rgba(255,255,255,.63);font-size:.8rem;line-height:1.8}
-.facts{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:24px}.fact{padding-top:9px;border-top:1px solid rgba(255,255,255,.18)}.fact b{display:block;color:var(--gold-2);font-size:.67rem}.fact small{display:block;color:rgba(255,255,255,.45);font-size:.55rem;margin-top:3px}
-
-/* ---------- poster ---------- */
-.poster-section{background:var(--paper)}
-.poster-grid{display:grid;grid-template-columns:1fr .82fr;gap:50px;align-items:center}
-.poster-copy h2{font-size:clamp(2.65rem,5.2vw,4.8rem);line-height:.92;margin:8px 0 16px;font-weight:600}
-.poster-copy p{max-width:520px;color:var(--muted);font-size:.82rem;line-height:1.8}
-.poster-frame{position:relative;width:100%;border:0;background:var(--paper-2);padding:10px;box-shadow:var(--card-shadow);transform:rotate(1deg)}
-.poster-frame img{width:100%;height:auto}.poster-open{position:absolute;right:19px;bottom:19px;width:38px;height:38px;border:0;border-radius:50%;background:var(--green);color:#fff;display:grid;place-items:center}
-
-/* ---------- rating ---------- */
-.rating-section{background:var(--paper-2)}
-.rating-grid{display:grid;grid-template-columns:.85fr 1.15fr;gap:22px;align-items:stretch}
-.rating-summary,.rating-box{background:var(--paper);border:1px solid var(--line);box-shadow:var(--card-shadow);padding:26px}
-.rating-summary{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:4px}
-.rating-score{font-family:"Lora",serif;font-size:3.2rem;font-weight:700;line-height:1;color:var(--ink)}
-.rating-stars-display{color:var(--line);font-size:1.25rem;letter-spacing:.14em}
-.rating-count{color:var(--muted);font-size:.7rem;margin-top:2px}
-.rating-login p{margin:0 0 14px;color:var(--muted);font-size:.76rem;line-height:1.6}
-.rating-note{margin-top:12px;color:var(--muted);font-size:.62rem}
-.rating-account{display:flex;align-items:center;gap:10px;margin-bottom:18px}
-.rating-avatar{width:38px;height:38px;border-radius:50%;object-fit:cover;border:2px solid var(--gold);background:var(--paper-2)}
-.rating-account-name{flex:1;display:flex;align-items:center;gap:7px;font-weight:800;font-size:.8rem;color:var(--ink);min-width:0}
-.rating-account-name span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.rating-edit-btn{border:0;background:transparent;color:var(--muted);font-size:.8rem;padding:2px;flex-shrink:0}
-.rating-edit-btn:hover{color:var(--green-2)}
-.rating-name-edit{display:flex;align-items:center;gap:5px}
-.rating-name-edit[hidden]{display:none}
-.rating-name-edit input{width:130px;margin:0;padding:6px 8px;font-size:.7rem;border-radius:5px}
-.rating-name-edit button{border:0;border-radius:5px;width:24px;height:24px;font-size:.7rem;font-weight:900;background:var(--green);color:#fff;flex-shrink:0}
-.rating-name-edit button#ratingNameCancel{background:var(--paper-2);color:var(--muted)}
-.rating-logout{border:1px solid var(--line);background:transparent;color:var(--muted);font-size:.58rem;font-weight:800;padding:7px 9px;border-radius:6px;flex-shrink:0}
-.rating-logout:hover{color:var(--ink);border-color:var(--gold)}
-.rating-stars-input{display:flex;gap:6px;font-size:1.8rem;line-height:1}
-.star-btn{border:0;background:transparent;color:var(--line);padding:0;cursor:pointer;transition:transform .15s ease,color .15s ease}
-.star-btn:hover{transform:scale(1.16)}
-.star-btn.active{color:var(--gold)}
-.rating-status{margin-top:12px;font-size:.68rem;color:var(--muted);min-height:16px}
-.rating-list{margin-top:20px;display:flex;flex-direction:column;gap:8px}
-.rating-list-item{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:11px 15px;background:var(--paper);border:1px solid var(--line);font-size:.72rem}
-.rating-list-item b{color:var(--ink);font-weight:800;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.rating-list-item span{color:var(--gold);letter-spacing:.1em;flex-shrink:0}
-.rating-review{width:100%;margin-top:16px;padding:10px 12px;border:1px solid var(--line);border-radius:7px;background:var(--paper-2);color:var(--ink);font-size:.72rem;line-height:1.55;resize:vertical;min-height:74px}
-.rating-photo-row{display:flex;align-items:center;gap:9px;flex-wrap:wrap;margin-top:10px}
-.rating-photo-label{display:inline-flex;align-items:center;gap:7px;border:1px solid var(--line);border-radius:7px;background:var(--paper-2);color:var(--ink);padding:9px 11px;font-size:.65rem;font-weight:800}
-.rating-photo-input{display:none}
-.rating-photo-name{color:var(--muted);font-size:.6rem;max-width:210px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.rating-photo-preview{display:none;width:78px;height:78px;border-radius:8px;object-fit:cover;border:1px solid var(--line);margin-top:8px}
-.rating-photo-preview.show{display:block}
-.rating-submit{margin-top:11px;border:0;border-radius:7px;background:var(--brick);color:#fff;padding:10px 13px;font-size:.62rem;font-weight:900}
-.rating-submit:disabled{opacity:.55;cursor:not-allowed}
-.rating-review-text{margin-top:5px;color:var(--muted);font-size:.65rem;line-height:1.55;white-space:pre-wrap}
-.rating-list-photo{width:74px;height:74px;border-radius:8px;object-fit:cover;border:1px solid var(--line);margin-top:7px}
-.rating-list-item{display:block}
-.rating-list-top{display:flex;align-items:center;justify-content:space-between;gap:12px}
-.rating-photo-note{color:var(--muted);font-size:.58rem;margin-top:6px}
-.rating-photo-error{color:#b64736;font-size:.62rem;margin-top:6px;min-height:14px}.rating-delete-btn{margin-top:8px;border:1px solid rgba(180,70,54,.25);border-radius:6px;background:transparent;color:#b64736;padding:6px 9px;font-size:.58rem;font-weight:800;cursor:pointer}.rating-delete-btn:hover{background:rgba(180,70,54,.08)}
-
-/* ---------- location ---------- */
-.location{background:var(--green);color:#fff}
-.location-title h2{font-size:clamp(2.45rem,5vw,4.2rem);line-height:.92;margin:7px 0 0;font-weight:600}
-.location-grid{display:grid;grid-template-columns:.78fr 1.22fr;gap:28px;margin-top:30px}
-.location-info{display:flex;flex-direction:column;gap:10px}
-.info-box{display:flex;gap:12px;padding:15px;border:1px solid rgba(255,255,255,.13);background:rgba(255,255,255,.045)}
-.info-box b{display:block;font-family:"Lora",serif;font-size:1rem;font-weight:600}.info-box small{display:block;color:rgba(255,255,255,.55);font-size:.61rem;margin-top:4px;line-height:1.55}
-.location-social-label{margin-top:4px;color:var(--muted);font-size:.56rem;font-weight:900;letter-spacing:.14em}
-.creator-social{display:flex;flex-wrap:wrap;gap:8px;margin-top:4px}.social-link{display:inline-flex;align-items:center;gap:7px;border:1px solid rgba(255,255,255,.18);padding:9px 11px;font-size:.61rem;font-weight:900}.social-link svg{width:15px;height:15px;fill:currentColor}
-.map-card{background:#fff;padding:10px;box-shadow:var(--card-shadow)}
-.map-stage{display:grid;place-items:center;background:#f5f5f5;overflow:hidden}.map-stage img{width:100%;height:auto;display:block;transform:none}
-.map-card figcaption{color:#1c4b3e;font-size:.58rem;font-weight:900;letter-spacing:.12em;padding:10px 4px 2px}
-
-/* ---------- contact ---------- */
-.contact{background:var(--brick);color:#fff;position:relative;overflow:hidden}
-.contact:after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(0,0,0,.13),transparent),url("https://cdn.phototourl.com/free/2026-08-11-c81d2500-1038-4397-a3c5-2aa0c8c8a66b.jpg") center/cover;opacity:.08}
-.contact-inner{display:flex;align-items:center;justify-content:space-between;gap:30px;position:relative;z-index:1}
-.contact h2{font-size:clamp(2.7rem,5.8vw,5rem);line-height:.9;margin:8px 0 15px;font-weight:600}
-.contact p:not(.eyebrow){max-width:560px;color:rgba(255,255,255,.75);font-size:.8rem;line-height:1.8}
-.contact-btn{border:1px solid rgba(255,255,255,.62);background:transparent;color:#fff;border-radius:7px;padding:14px 15px;font-size:.65rem;font-weight:900}.contact-btn:hover{background:#fff;color:var(--brick)}
-
-/* ---------- footer ---------- */
-.footer{background:#06100d;color:#fff;padding:34px 0 90px}
-.footer-top{display:grid;grid-template-columns:1.1fr .9fr 1fr;gap:26px;align-items:center}
-.footer-brand{display:flex;align-items:center;gap:13px}.footer-logo{width:62px;height:62px;border-radius:14px;display:grid;place-items:center;background:var(--paper);border:1px solid var(--gold);padding:5px}.footer-logo img{max-width:100%;max-height:100%;object-fit:contain}
-.footer-brand strong{display:block;font-family:"Lora",serif;font-size:1.05rem}.footer-brand small{display:block;color:rgba(255,255,255,.48);font-size:.61rem;line-height:1.5;margin-top:3px}
-.footer-actions{display:flex;flex-wrap:wrap;gap:8px}.footer-link{display:inline-flex;align-items:center;gap:7px;border:1px solid rgba(255,255,255,.15);padding:10px 11px;color:#fff;font-size:.62rem;font-weight:900}.footer-link svg{width:16px;height:16px;fill:currentColor}
-.footer-credit{text-align:right}.footer-credit strong{display:block;font-family:"Lora",serif;font-size:1rem;color:var(--gold-2)}.footer-credit span{display:block;color:rgba(255,255,255,.46);font-size:.57rem;margin-top:4px}
-.floating-cart{position:fixed;right:18px;bottom:18px;z-index:100;border:0;background:var(--brick);color:#fff;border-radius:999px;padding:8px 11px;display:flex;align-items:center;gap:8px;box-shadow:0 16px 35px rgba(0,0,0,.3);font-weight:900}
-.floating-cart .icon{width:31px;height:31px;border-radius:50%;background:rgba(255,255,255,.15);display:grid;place-items:center}.floating-cart b{min-width:21px;height:21px;border-radius:50%;background:#fff;color:var(--brick);display:grid;place-items:center;font-size:.63rem}
-.cart-hint{position:fixed;right:19px;bottom:71px;z-index:99;background:var(--paper);color:var(--ink);border:1px solid var(--line);padding:8px 10px;font-size:.61rem;font-weight:900;box-shadow:var(--card-shadow);opacity:0;transform:translateY(7px);pointer-events:none;transition:.25s}.cart-hint.show{opacity:1;transform:none}
-.toast{position:fixed;left:50%;bottom:82px;z-index:180;transform:translate(-50%,11px);opacity:0;pointer-events:none;background:var(--ink);color:var(--paper);padding:10px 13px;border-radius:7px;font-size:.66rem;font-weight:800;transition:.22s;box-shadow:var(--card-shadow)}.toast.show{opacity:1;transform:translate(-50%,0)}
-.fly-layer{position:fixed;inset:0;z-index:175;pointer-events:none;overflow:visible}
-.fly-item{position:fixed;width:78px;height:78px;object-fit:cover;border-radius:14px;border:2px solid rgba(255,255,255,.9);background:var(--paper);box-shadow:0 18px 38px rgba(0,0,0,.38),0 0 0 1px rgba(72,180,135,.24);will-change:transform,opacity;transform-origin:center;pointer-events:none}
-.fly-item::after{content:"";position:absolute;inset:-10px;border-radius:18px;box-shadow:0 0 28px rgba(47,176,126,.35);opacity:.8}
-.fly-spark{position:fixed;width:7px;height:7px;border-radius:50%;background:#9ee6c5;box-shadow:0 0 14px rgba(90,220,160,.8);pointer-events:none;will-change:transform,opacity;animation:flySpark .62s ease-out forwards}
-@keyframes flySpark{0%{opacity:0;transform:scale(.4)}20%{opacity:1}100%{opacity:0;transform:translateY(13px) scale(.05)}}
-
-/* ---------- drawer/modal ---------- */
-.overlay{position:fixed;inset:0;background:rgba(0,0,0,.58);z-index:120;opacity:0;pointer-events:none;transition:.25s}.overlay.open{opacity:1;pointer-events:auto}
-.drawer{position:fixed;top:0;right:0;height:100%;width:min(430px,94vw);z-index:125;background:var(--paper);color:var(--ink);transform:translateX(105%);transition:.3s;display:flex;flex-direction:column;box-shadow:-25px 0 55px rgba(0,0,0,.3)}.drawer.open{transform:none}
-.drawer-head{display:flex;justify-content:space-between;align-items:start;padding:20px;border-bottom:1px solid var(--line)}.drawer-head h3{font-size:1.55rem;margin:5px 0 0;font-weight:600}.drawer-head button{border:0;background:transparent;color:var(--ink);font-size:1.2rem}
-.drawer-body{flex:1;overflow:auto;padding:10px 20px}.empty{text-align:center;color:var(--muted);font-size:.78rem;padding:50px 10px}.cart-row{display:grid;grid-template-columns:1fr auto auto;gap:10px;align-items:center;border-bottom:1px solid var(--line);padding:14px 0}.cart-name{font-size:.75rem;font-weight:900}.cart-name small{display:block;color:var(--muted);font-size:.62rem;font-weight:500;margin-top:4px}.cart-price{font-size:.72rem;font-weight:900}.remove{border:0;background:none;color:var(--brick);font-weight:900}
-.drawer-foot{padding:16px 20px 24px;border-top:1px solid var(--line)}.total{display:flex;justify-content:space-between;font-size:.88rem;font-weight:900;margin-bottom:12px}.checkout{width:100%;border:0;background:var(--green);color:#fff;padding:13px;border-radius:7px;font-size:.66rem;font-weight:900;letter-spacing:.06em}.checkout:disabled{opacity:.45;cursor:not-allowed}
-.modal{position:fixed;inset:0;z-index:150;background:rgba(4,12,10,.74);display:flex;align-items:center;justify-content:center;padding:16px;opacity:0;pointer-events:none;transition:.25s}.modal.open{opacity:1;pointer-events:auto}
-.modal-card{width:min(490px,100%);max-height:92vh;overflow:auto;background:var(--paper);color:var(--ink);padding:23px;border:1px solid var(--line);box-shadow:var(--card-shadow);transform:translateY(10px) scale(.98);transition:.25s}.modal.open .modal-card{transform:none}
-.modal-head{display:flex;justify-content:space-between;gap:20px}.modal-head h3{font-size:1.65rem;margin:6px 0 0;font-weight:600}.modal-head button{border:0;background:transparent;color:var(--ink);font-size:1.2rem}
-.modal-sub{font-size:.75rem;color:var(--muted);line-height:1.6;margin:5px 0 17px}
-label{display:block;font-size:.68rem;font-weight:900;margin:11px 0}
-input{width:100%;margin-top:6px;border:1px solid var(--line);background:var(--paper-2);color:var(--ink);padding:12px;border-radius:7px;outline:none}input:focus{border-color:var(--brick)}
-.error{display:none;color:var(--brick);font-size:.59rem;font-weight:900}.error.show{display:block}
-.summary{margin-top:14px;background:var(--paper-2);border:1px dashed var(--line);padding:12px}.sum{display:flex;justify-content:space-between;gap:10px;padding:4px 0;font-size:.67rem}.sum.total{border-top:1px dashed var(--line);padding-top:8px;margin-top:6px}
-.modal-actions{display:flex;gap:8px;margin-top:15px}.modal-actions .btn{flex:1}
-.poster-modal{position:fixed;inset:0;z-index:160;background:rgba(0,0,0,.8);display:flex;align-items:center;justify-content:center;padding:14px;opacity:0;pointer-events:none;transition:.25s}.poster-modal.open{opacity:1;pointer-events:auto}
-.poster-box{position:relative;background:var(--paper);padding:10px;width:min(780px,96vw);max-height:94vh}.poster-box img{width:100%;height:auto;max-height:90vh;object-fit:contain}.poster-close{position:absolute;right:-11px;top:-11px;width:35px;height:35px;border:0;border-radius:50%;background:var(--green);color:#fff}
-
-/* mobile menu */
-.mobile-menu{position:fixed;inset:0;z-index:75;background:linear-gradient(165deg,#0d221c,#152e26);padding:88px 24px 24px;transform:translateY(-104%);transition:.3s;visibility:hidden}
-.mobile-menu.open{transform:none;visibility:visible}.mobile-menu a{display:block;color:#fff;padding:17px 0;border-bottom:1px solid var(--white-line);font-family:"Lora",serif;font-size:1.6rem}.mobile-theme-title{margin-bottom:12px;color:rgba(255,255,255,.48);font-size:.65rem;font-weight:800;letter-spacing:.12em}.mobile-theme{display:flex;gap:8px;flex-wrap:wrap}.mobile-theme button{border:1px solid var(--white-line);background:rgba(255,255,255,.035);color:#fff;border-radius:8px;padding:9px 12px;font-size:.68rem;font-weight:800;transition:.2s}.mobile-theme button:hover{transform:translateY(-1px);background:rgba(255,255,255,.08)}.mobile-theme button.active{background:var(--gold);color:#1e3027;box-shadow:0 8px 20px rgba(74,189,144,.16)}
-
-/* responsive */
-@media(max-width:940px){
-  .nav-links{display:none}.menu-toggle{display:block}.hero-grid{grid-template-columns:1fr .58fr;gap:30px}.menu-grid{grid-template-columns:repeat(2,1fr)}.menu-card:nth-child(3){grid-column:1/-1;max-width:520px;justify-self:center}.package-grid{grid-template-columns:1fr}.story-grid,.location-grid,.poster-grid,.rating-grid{grid-template-columns:1fr}.story-image img{height:390px}.poster-frame{max-width:520px;justify-self:center}
-  .footer-top{grid-template-columns:1fr 1fr}.footer-credit{text-align:left}
-}
-@media(max-width:720px){
-  .nav{min-height:62px}.brand{min-width:auto}.nav-tools{margin-left:auto}.theme-switcher{display:none}.hero{min-height:auto}.hero-inner{padding:58px 0 48px}.hero-grid{grid-template-columns:1fr}.hero-visual{width:84%;max-width:350px;justify-self:center;order:-1}.hero-copy h1{font-size:clamp(3rem,15vw,5.4rem)}.quick-grid{grid-template-columns:1fr 1fr}.quick-item:nth-child(2){border-right:0}.quick-item:nth-child(-n+2){border-bottom:1px solid rgba(255,255,255,.1)}.section{padding:68px 0}.section-head{display:block}.section-note{margin-top:10px}.story-image img{height:300px}.contact-inner{display:block}.contact-btn{width:100%;margin-top:18px}
-}
-@media(max-width:540px){
-  .wrap{width:min(100% - 24px,1160px)}.school-logo{width:34px;height:34px}.school-logo img{width:27px;height:27px}.brand-text strong{font-size:.7rem}.brand-text small{font-size:.49rem}.cart-top span{display:none}
-  .hero-poster{transform:none}.hero-badge{left:-6px}.hero-visual{width:88%}
-  .menu-grid{grid-template-columns:1fr}.menu-card:nth-child(3){grid-column:auto;max-width:none}
-  .menu-bottom{align-items:stretch}.add{flex:1}.package-card{grid-template-columns:1fr}.package-photo{min-height:230px}.package-copy{padding:20px}.facts{grid-template-columns:1fr}
-  .footer-top{grid-template-columns:1fr}.footer-credit{text-align:left}.footer-actions{margin-top:4px}
-  .rating-account{flex-wrap:wrap}.rating-name-edit input{width:100px}.rating-summary,.rating-box{padding:20px}
-  .floating-cart{right:10px;bottom:10px}.cart-hint{right:12px;bottom:63px}.modal{padding:10px}.modal-card{padding:18px}
-}
-@media(prefers-reduced-motion:reduce){*,*:before,*:after{animation-duration:.001ms!important;transition-duration:.001ms!important;scroll-behavior:auto!important}}
-
-/* ---------- scroll progress + parallax polish ---------- */
-.scroll-progress{position:fixed;top:0;left:0;height:3px;width:0%;z-index:200;background:linear-gradient(90deg,var(--gold),var(--brick-2));box-shadow:0 0 12px rgba(120,207,160,.5);transition:width .08s linear;pointer-events:none}
-.hero-bg{will-change:transform}
-@media(prefers-reduced-motion:reduce){.scroll-progress{display:none}}
-
-
-/* ===== PREMIUM GREEN LUXURY LAYER ===== */
-body{
-  background:
-    radial-gradient(circle at 12% 0%, rgba(90,190,145,.10), transparent 28%),
-    radial-gradient(circle at 90% 18%, rgba(70,160,120,.08), transparent 24%),
-    var(--page);
-  transition:background .5s ease,color .35s ease;
-}
-body:after{content:"";position:fixed;inset:0;pointer-events:none;z-index:999;opacity:.04;background:linear-gradient(115deg,transparent 0 43%,rgba(255,255,255,.8) 50%,transparent 57%);transform:translateX(-120%);animation:luxSheen 18s ease-in-out infinite}
-@keyframes luxSheen{0%,72%{transform:translateX(-120%)}88%,100%{transform:translateX(120%)}}
-.header{background:color-mix(in srgb,var(--glass) 88%,transparent);border-bottom:1px solid var(--white-line);box-shadow:0 12px 35px rgba(0,0,0,.12)}
-.school-logo,.footer-logo{box-shadow:0 8px 22px rgba(0,0,0,.14),0 0 0 1px rgba(180,230,198,.12) inset}
-.theme-switcher{background:rgba(8,35,27,.35);box-shadow:0 8px 25px rgba(0,0,0,.12) inset}
-.theme-btn.active{background:linear-gradient(135deg,var(--gold-2),var(--gold));box-shadow:0 6px 18px rgba(80,160,118,.2)}
-.hero{background:#0a2119}
-.hero-bg{filter:saturate(.84) brightness(.78)}
-.hero-poster{background:rgba(238,247,241,.84);border:1px solid rgba(219,242,226,.4);box-shadow:0 30px 80px rgba(0,0,0,.45),0 0 0 1px rgba(201,235,211,.1) inset;backdrop-filter:blur(12px)}
-.hero-badge{background:linear-gradient(135deg,var(--green-2),var(--green));border:1px solid rgba(210,240,220,.22);box-shadow:0 18px 38px rgba(0,0,0,.28)}
-.quick{background:linear-gradient(90deg,#0b3d30,#0e5542 50%,#0b3d30);box-shadow:0 14px 30px rgba(0,0,0,.12)}
-.section{position:relative}
-.menu-section:before,.poster-section:before{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(circle at 15% 5%,var(--glow),transparent 24%),radial-gradient(circle at 90% 85%,rgba(91,184,139,.07),transparent 28%)}
-.menu-card,.package-card,.info-box,.map-card,.modal-card,.drawer,.poster-box,.rating-summary,.rating-box,.rating-list-item{border:1px solid rgba(54,105,82,.15);box-shadow:var(--card-shadow);backdrop-filter:blur(12px)}
-.menu-card,.package-card{transition:transform .45s cubic-bezier(.2,.75,.2,1),box-shadow .45s ease,border-color .45s ease}
-.menu-card:hover,.package-card:hover{transform:translateY(-10px);box-shadow:0 34px 80px rgba(5,45,31,.22),0 0 0 1px rgba(89,168,127,.16);border-color:rgba(89,168,127,.26)}
-.menu-photo,.package-copy{background:color-mix(in srgb,var(--paper-2) 92%,transparent)}
-.menu-photo img,.package-photo img,.story-image img,.poster-frame img{transition:transform .7s cubic-bezier(.2,.7,.2,1),filter .5s ease}
-.menu-card:hover .menu-photo img,.package-card:hover .package-photo img{transform:scale(1.045);filter:saturate(1.04)}
-.step:hover,.add:hover,.package-add:hover,.btn-primary:hover,.contact-btn:hover{box-shadow:0 12px 30px rgba(21,92,69,.2)}
-.add,.package-add,.btn-primary,.contact-btn,.cart-top,.floating-cart,.checkout{background:linear-gradient(135deg,var(--green-2),var(--green));box-shadow:0 10px 24px rgba(10,74,56,.14)}
-.story{background:linear-gradient(145deg,#0d3328,#071a14 72%);box-shadow:inset 0 1px rgba(255,255,255,.04),inset 0 -1px rgba(255,255,255,.03)}
-.story-image:after{border-color:var(--gold)}
-.location{background:linear-gradient(145deg,#0d4a38,#0b3328);box-shadow:inset 0 1px rgba(255,255,255,.04)}
-.info-box,.social-link{background:rgba(255,255,255,.045);backdrop-filter:blur(14px);transition:transform .3s ease,background .3s ease,border-color .3s ease}
-.info-box:hover,.social-link:hover{transform:translateY(-3px);background:rgba(255,255,255,.075);border-color:rgba(170,220,188,.28)}
-.contact{background:linear-gradient(135deg,#17634b,#0d4a39 65%,#0a382c)}
-.footer{background:#061711}
-.footer-link{transition:transform .25s ease,background .25s ease,border-color .25s ease}.footer-link:hover{transform:translateY(-3px);background:rgba(255,255,255,.06);border-color:rgba(170,220,188,.25)}
-.drawer{background:color-mix(in srgb,var(--paper) 92%,rgba(80,180,130,.08));}
-.modal{background:rgba(3,20,14,.62);backdrop-filter:blur(8px)}
-.modal-card,.poster-box{background:color-mix(in srgb,var(--paper) 94%,rgba(80,180,130,.08))}
-input{transition:border-color .25s ease,box-shadow .25s ease,transform .25s ease}input:focus{border-color:var(--green-2);box-shadow:0 0 0 4px rgba(53,145,106,.10);transform:translateY(-1px)}
-.btn,.add,.package-add,.cart-top,.floating-cart,.checkout,.theme-btn,.step,.social-link,.footer-link{transition:transform .25s cubic-bezier(.2,.75,.2,1),box-shadow .25s ease,background .25s ease}
-.btn:hover,.cart-top:hover,.floating-cart:hover{transform:translateY(-2px)}
-.floating-cart{animation:floatCart 3.8s ease-in-out infinite}
-@keyframes floatCart{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
-.section,.quick,.hero,.story,.location,.contact,.footer,.menu-card,.package-card,.info-box,.poster-frame{opacity:0;transform:translateY(24px);transition:opacity .75s ease,transform .75s cubic-bezier(.2,.75,.2,1)}
-.section.is-visible,.quick.is-visible,.hero.is-visible,.story.is-visible,.location.is-visible,.contact.is-visible,.footer.is-visible,.menu-card.is-visible,.package-card.is-visible,.info-box.is-visible,.poster-frame.is-visible{opacity:1;transform:none}
-.menu-grid .menu-card:nth-child(2),.package-grid .package-card:nth-child(2),.location-info .info-box:nth-child(2){transition-delay:.08s}
-.menu-grid .menu-card:nth-child(3),.location-info .info-box:nth-child(3){transition-delay:.16s}
-.menu-grid .menu-card:nth-child(4){transition-delay:.24s}
-.quick-grid .quick-item{transition:transform .25s ease}.quick-grid .quick-item:hover{transform:translateY(-2px)}
-@media(prefers-reduced-motion:reduce){body:after,.floating-cart{animation:none!important}.section,.quick,.hero,.story,.location,.contact,.footer,.menu-card,.package-card,.info-box,.poster-frame{opacity:1!important;transform:none!important}}
-
-/* ===== MOON LUXE — lapisan tambahan, hanya aktif saat data-theme="moon" ===== */
-html[data-theme="moon"] h1,html[data-theme="moon"] h2{font-family:"Playfair Display",serif}
-html[data-theme="moon"] .eyebrow{font-family:"Lora",serif;font-style:italic;font-weight:600;letter-spacing:.1em}
-html[data-theme="moon"] .nav-links{font-family:"Lora",serif;font-weight:600}
-html[data-theme="moon"] .nav-links a{position:relative;padding-bottom:2px}
-html[data-theme="moon"] .nav-links a:after{content:"";position:absolute;left:0;right:100%;bottom:-2px;height:1px;background:var(--gold-2);transition:right .3s ease}
-html[data-theme="moon"] .nav-links a:hover:after{right:0}
-html[data-theme="moon"] .menu-head strong{font-family:"Lora",serif;font-weight:600;font-size:.86rem}
-html[data-theme="moon"] .package-price{font-family:"Lora",serif;font-size:1.1rem;font-weight:600}
-
-html[data-theme="moon"] .hero{background:#0f2b21}
-html[data-theme="moon"] .hero-bg{background-image:linear-gradient(100deg,rgba(15,43,33,.93) 0%,rgba(15,43,33,.78) 45%,rgba(15,43,33,.5) 100%),url("https://cdn.phototourl.com/free/2026-08-11-5821cad1-f5bc-4c88-b112-d494406828ac.jpg");filter:none}
-html[data-theme="moon"] .hero-bg:after{content:"";position:absolute;inset:0;background:rgba(15,43,33,.28);mix-blend-mode:multiply;pointer-events:none}
-html[data-theme="moon"] .hero-poster{animation:moonFloat 6.5s ease-in-out infinite}
-html[data-theme="moon"] .hero-poster{background:rgba(244,233,210,.94);border-color:rgba(218,181,104,.4);box-shadow:0 30px 80px rgba(2,16,11,.45),0 0 0 1px rgba(218,181,104,.18) inset}
-html[data-theme="moon"] .hero-badge{background:linear-gradient(135deg,var(--brick-2),var(--brick))}
-@keyframes moonFloat{0%,100%{transform:translateY(0) rotate(1.7deg)}50%{transform:translateY(-9px) rotate(1.7deg)}}
-
-html[data-theme="moon"] .featured-label{background-image:linear-gradient(100deg,var(--gold) 40%,var(--gold-2) 50%,var(--gold) 60%);background-size:260% 100%;animation:moonShimmer 3.4s ease-in-out infinite}
-@keyframes moonShimmer{0%{background-position:-160% 0}100%{background-position:260% 0}}
-
-html[data-theme="moon"] .menu-card:hover,
-html[data-theme="moon"] .package-card:hover,
-html[data-theme="moon"] .poster-frame:hover{box-shadow:0 34px 80px rgba(2,16,11,.45),0 0 0 1px rgba(218,181,104,.38);border-color:rgba(218,181,104,.4)}
-
-html[data-theme="moon"] .contact{background:linear-gradient(135deg,var(--brick-2),var(--brick) 65%,#8a431f)}
-html[data-theme="moon"] .add,
-html[data-theme="moon"] .package-add,
-html[data-theme="moon"] .btn-primary,
-html[data-theme="moon"] .contact-btn,
-html[data-theme="moon"] .cart-top,
-html[data-theme="moon"] .floating-cart,
-html[data-theme="moon"] .checkout{background:linear-gradient(135deg,var(--brick-2),var(--brick))}
-html[data-theme="moon"] .step:hover,
-html[data-theme="moon"] .add:hover,
-html[data-theme="moon"] .package-add:hover,
-html[data-theme="moon"] .btn-primary:hover,
-html[data-theme="moon"] .contact-btn:hover{box-shadow:0 12px 30px rgba(180,110,50,.28)}
-
-html[data-theme="moon"] .drawer{background:var(--paper)}
-html[data-theme="moon"] .modal-card,
-html[data-theme="moon"] .poster-box{background:var(--paper)}
-html[data-theme="moon"] .theme-btn.active{color:#241608}
-
-</style>
-</head>
-
-<body>
-<div class="scroll-progress" id="scrollProgress"></div>
-<header class="header">
-  <div class="wrap nav">
-    <a class="brand" href="#top">
-      <span class="school-logo"><img src="https://cdn.phototourl.com/free/2026-08-11-1624d001-f3c2-429f-b75c-73896ee9e98a.png" alt="Logo SMAN 1 Babat"></span>
-      <span class="brand-text"><strong>BAZAR KELAS X-4</strong><small>SMAN 1 Babat · SMABA</small></span>
-    </a>
-
-    <nav class="nav-links">
-      <a href="#menu">Menu</a><a href="#paket">Paket</a><a href="#rating">Rating</a><a href="#lokasi">Lokasi</a><a href="#kontak">Kontak</a>
-    </nav>
-
-    <div class="nav-tools">
-      <div class="theme-switcher" aria-label="Mode tampilan" title="6 tema · Forest Luxe adalah default">
-        <button class="theme-btn" data-theme-choice="day" title="Siang">☀️</button>
-        <button class="theme-btn" data-theme-choice="dusk" title="Sore">🌆</button>
-        <button class="theme-btn" data-theme-choice="night" title="Malam">🌙</button>
-        <button class="theme-btn" data-theme-choice="forest" title="Forest Luxe · Default">🌲</button>
-        <button class="theme-btn" data-theme-choice="sage" title="Sage Atelier · Baru">🍃</button>
-        <button class="theme-btn" data-theme-choice="moon" title="Moon Luxe · Krem &amp; Emas">🌕</button>
-      </div>
-      <button class="cart-top" id="topCart" type="button" aria-label="Buka keranjang">🧺 <span>Keranjang</span><b id="topCount">0</b></button>
-      <button class="menu-toggle" id="menuToggle" type="button" aria-label="Buka menu">☰</button>
-    </div>
-  </div>
-</header>
-
-<nav class="mobile-menu" id="mobileMenu" aria-label="Menu mobile">
-  <div class="mobile-theme-title">TAMPILAN</div>
-  <div class="mobile-theme">
-    <button data-mobile-theme="day">☀️ Siang</button>
-    <button data-mobile-theme="dusk">🌆 Sore</button>
-    <button data-mobile-theme="night">🌙 Malam</button>
-    <button data-mobile-theme="forest">🌲 Forest Luxe · Default</button>
-    <button data-mobile-theme="sage">🍃 Sage Atelier · Baru</button>
-    <button data-mobile-theme="moon">🌕 Moon Luxe · Krem &amp; Emas</button>
-  </div>
-  <a href="#menu">Menu</a>
-  <a href="#paket">Paket Hemat</a>
-  <a href="#rating">Rating</a>
-  <a href="#lokasi">Lokasi</a>
-  <a href="#kontak">Kontak</a>
-</nav>
-
-<main id="top">
-<section class="hero">
-  <div class="hero-bg"></div>
-  <div class="hero-batik"></div>
-  <div class="wrap hero-inner">
-    <div class="hero-mini">✦ KAMIS · 13 AGUSTUS 2026 · R.21 · X-4 ✦</div>
-    <div class="hero-grid">
-      <div class="hero-copy">
-        <p class="eyebrow">SMAN 1 BABAT · BAZAR KELAS X-4</p>
-        <h1>SEMARAK<br><em>BAZAR JOGJA</em><br>KELAS X-4</h1>
-        <p class="hero-lead">Jajan ala Jogja, mampir ke stan X-4. Pilih menu, masukkan ke keranjang, lalu tulis jam ambilmu sebelum pesanan dikirim ke WhatsApp.</p>
-        <div class="hero-actions">
-          <a class="btn btn-primary" href="#menu">LIHAT MENU ↘</a>
-          <button class="btn btn-outline-light" id="openPosterHero" type="button">LIHAT POSTER</button>
-        </div>
-        <div class="hero-meta"><span>08.00–12.00 WIB</span><i></i><span>STAND R.21</span><i></i><span>13 AGUSTUS</span></div>
-      </div>
-      <div class="hero-visual">
-        <div class="hero-poster"><img src="https://cdn.phototourl.com/free/2026-08-11-6959c21d-31d5-4198-ac27-bd9a14b50514.jpg" alt="Poster Bazar Kelas X-4" fetchpriority="high"></div>
-        <div class="hero-badge"><small>AMBIL DI</small><strong>R.21</strong></div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<section class="quick">
-  <div class="wrap quick-grid">
-    <div class="quick-item"><span>📅</span><div><b>13 AGUSTUS 2026</b><small>Kamis</small></div></div>
-    <div class="quick-item"><span>⏰</span><div><b>08.00–12.00 WIB</b><small>Jam bazar</small></div></div>
-    <div class="quick-item"><span>📍</span><div><b>RUANG R.21</b><small>Stand Kelas X-4</small></div></div>
-    <div class="quick-item"><span>💬</span><div><b>WHATSAPP</b><small>+62 889-9147-7912</small></div></div>
-  </div>
-</section>
-
-<section id="menu" class="section menu-section">
-  <div class="wrap">
-    <div class="section-head">
-      <div><p class="eyebrow">01 · KIOS X-4</p><h2>MENU UTAMA</h2></div>
-      <p class="section-note">Pilih makanan atau minuman. Jumlah bisa diubah dari kartu menu atau dari keranjang.</p>
-    </div>
-
-    <div class="menu-grid">
-      <article class="menu-card">
-        <div class="menu-photo"><span class="menu-num">01</span><img src="https://iili.io/C6Y20Mb.jpg" alt="Bakmi Ayam" loading="lazy"></div>
-        <div class="menu-body">
-          <div class="menu-head"><h3>Bakmi Ayam</h3><strong>Rp12.000</strong></div>
-          <p>Bakmi jawa gurih dengan ayam cincang dan sawi.</p>
-          <div class="menu-bottom">
-            <div class="stepper"><button class="step" data-step="-1" data-id="bakmi">−</button><span data-qty="bakmi">0</span><button class="step" data-step="1" data-id="bakmi">+</button></div>
-            <button class="add" data-add="bakmi" type="button">+ TAMBAHKAN</button>
-          </div>
-        </div>
-      </article>
-
-      <article class="menu-card">
-        <span class="featured-label">PALING DICARI</span>
-        <div class="menu-photo"><span class="menu-num">02</span><img src="https://iili.io/C6YqPMF.jpg" alt="Es Kopi Joss Cincau" loading="lazy"></div>
-        <div class="menu-body">
-          <div class="menu-head"><h3>Es Kopi Joss Cincau</h3><strong>Rp5.000</strong></div>
-          <p>Kopi dingin, cincau, dan manis yang pas buat teman makan.</p>
-          <div class="menu-bottom">
-            <div class="stepper"><button class="step" data-step="-1" data-id="cincau">−</button><span data-qty="cincau">0</span><button class="step" data-step="1" data-id="cincau">+</button></div>
-            <button class="add" data-add="cincau" type="button">+ TAMBAHKAN</button>
-          </div>
-        </div>
-      </article>
-
-      <article class="menu-card">
-        <div class="menu-photo"><span class="menu-num">03</span><img src="https://iili.io/C6Y2McQ.jpg" alt="Bakpia Kukus Jogja" loading="lazy"></div>
-        <div class="menu-body">
-          <div class="menu-head"><h3>Bakpia Kukus Jogja</h3><strong>Rp6.000</strong></div>
-          <p>Bakpia kukus lembut khas Jogja, cocok untuk camilan.</p>
-          <div class="menu-bottom">
-            <div class="stepper"><button class="step" data-step="-1" data-id="bakpia">−</button><span data-qty="bakpia">0</span><button class="step" data-step="1" data-id="bakpia">+</button></div>
-            <button class="add" data-add="bakpia" type="button">+ TAMBAHKAN</button>
-          </div>
-        </div>
-      </article>
-    </div>
-  </div>
-</section>
-
-<section id="paket" class="section package-section">
-  <div class="wrap">
-    <div class="section-head">
-      <div><p class="eyebrow">02 · BIKIN HEMAT</p><h2>PAKET HEMAT X-4</h2></div>
-      <p class="section-note">Dua pilihan paket untuk teman makan yang lebih praktis dan hemat.</p>
-    </div>
-    <div class="package-grid">
-      <article class="package-card">
-        <div class="package-photo"><img src="https://cdn.phototourl.com/free/2026-08-11-c81d2500-1038-4397-a3c5-2aa0c8c8a66b.jpg" alt="Paket 1 Bakpia dan Cincau" loading="lazy"><b>17K</b></div>
-        <div class="package-copy"><small>PAKET 01</small><h3>Bakpia + Cincau</h3><p>2 pcs Bakpia Kukus + 1 Es Kopi Joss Cincau</p><div class="package-price">Rp17.000</div><button class="package-add" data-add="paket1" type="button">MASUKKAN KE KERANJANG ↗</button></div>
-      </article>
-      <article class="package-card">
-        <div class="package-photo"><img src="https://cdn.phototourl.com/free/2026-08-11-fc592fff-b01d-415d-810a-44acfc3c24a6.jpg" alt="Paket 2 Bakmi dan Cincau" loading="lazy"><b>17K</b></div>
-        <div class="package-copy"><small>PAKET 02</small><h3>Bakmi + Cincau</h3><p>1 Bakmi Ayam + 1 Es Kopi Joss Cincau</p><div class="package-price">Rp17.000</div><button class="package-add" data-add="paket2" type="button">MASUKKAN KE KERANJANG ↗</button></div>
-      </article>
-    </div>
-  </div>
-</section>
-
-<section class="section story">
-  <div class="wrap story-grid">
-    <div class="story-image"><img src="https://cdn.phototourl.com/free/2026-08-11-5821cad1-f5bc-4c88-b112-d494406828ac.jpg" alt="Borobudur dan suasana Jogja" loading="lazy"></div>
-    <div class="story-copy">
-      <p class="eyebrow">03 · NUANSA JOGJA</p>
-      <h2>JOGJA, MAMPIR<br>KE X-4.</h2>
-      <p>Hijau menjadi bahasa utama di seluruh pengalaman—dari forest yang dalam sampai sage yang ringan. Motif batik dan highlight lembut hanya dipakai sebagai aksen supaya tetap terasa mahal, hangat, dan rapi.</p>
-      <div class="facts"><div class="fact"><b>13 AGUSTUS</b><small>Hari bazar</small></div><div class="fact"><b>08.00–12.00</b><small>Jam bazar</small></div><div class="fact"><b>R.21</b><small>Stand X-4</small></div></div>
-    </div>
-  </div>
-</section>
-
-<section class="section poster-section">
-  <div class="wrap poster-grid">
-    <div class="poster-copy">
-      <p class="eyebrow">04 · INFO BAZAR</p><h2>JANGAN SAMPAI<br>KELEWAT.</h2>
-      <p>Kamis, 13 Agustus 2026. Bazar mulai pukul 08.00 WIB dan selesai sekitar pukul 12.00 WIB. Pesanan diambil di R.21.</p>
-      <button class="btn btn-primary" id="openPosterInfo" type="button">BUKA POSTER ↗</button>
-    </div>
-    <button class="poster-frame" id="openPosterImage" type="button" aria-label="Buka poster">
-      <img src="https://cdn.phototourl.com/free/2026-08-11-6959c21d-31d5-4198-ac27-bd9a14b50514.jpg" alt="Poster bazar" loading="lazy"><span class="poster-open">↗</span>
-    </button>
-  </div>
-</section>
-
-<section id="rating" class="section rating-section">
-  <div class="wrap">
-    <div class="section-head">
-      <div><p class="eyebrow">05 · KATA PEMBELI</p><h2>RATING &amp; ULASAN</h2></div>
-      <p class="section-note">Sudah pernah beli? Kasih bintang buat bazar kelas X-4. Login akun Google dulu ya, supaya satu orang cuma bisa kasih satu rating.</p>
-    </div>
-
-    <div class="rating-grid">
-      <div class="rating-summary">
-        <div class="rating-score" id="ratingAvg">–</div>
-        <div class="rating-stars-display" id="ratingStarsDisplay" aria-hidden="true">★★★★★</div>
-        <div class="rating-count" id="ratingCount">Belum ada rating</div>
-      </div>
-
-      <div class="rating-box" id="ratingBox">
-        <div class="rating-login" id="ratingLoggedOut">
-          <p>Login dengan Google untuk kasih rating dan ulasan.</p>
-          <div id="gsiButton"></div>
-          <p class="rating-note" id="ratingNotConfigured" hidden>Fitur login belum diaktifkan admin. Rata-rata rating tetap bisa dilihat.</p>
-        </div>
-
-        <div class="rating-form" id="ratingLoggedIn" hidden>
-          <div class="rating-account">
-            <img id="ratingAvatar" class="rating-avatar" src="" alt="Foto akun">
-            <div class="rating-account-name">
-              <div class="rating-name-row">
-                <span id="ratingDisplayName">Nama</span>
-                <button type="button" id="editNameBtn" class="rating-edit-btn" title="Edit nama tampilan" aria-label="Edit nama tampilan">✎</button>
-              </div>
-              <div class="rating-name-edit" id="ratingNameEdit">
-                <input type="text" id="ratingNameInput" maxlength="30" placeholder="Tulis nama tampilan">
-                <button type="button" id="ratingNameSave">Simpan</button>
-                <button type="button" id="ratingNameCancel">Batal</button>
-              </div>
-            </div>
-            <button type="button" id="ratingLogout" class="rating-logout">Keluar</button>
-          </div>
-          <div class="rating-stars-input" id="ratingStarsInput" role="radiogroup" aria-label="Beri rating 1 sampai 5 bintang">
-            <button type="button" class="star-btn" data-star="1" aria-label="1 bintang">★</button>
-            <button type="button" class="star-btn" data-star="2" aria-label="2 bintang">★</button>
-            <button type="button" class="star-btn" data-star="3" aria-label="3 bintang">★</button>
-            <button type="button" class="star-btn" data-star="4" aria-label="4 bintang">★</button>
-            <button type="button" class="star-btn" data-star="5" aria-label="5 bintang">★</button>
-          </div>
-          <textarea id="ratingReview" class="rating-review" maxlength="500" placeholder="Tulis ulasan (opsional)"></textarea>
-          <div class="rating-photo-row">
-            <label class="rating-photo-label" for="ratingPhoto">📷 Tambah foto</label>
-            <input class="rating-photo-input" id="ratingPhoto" type="file" accept="image/jpeg,image/png,image/webp,image/*">
-            <span class="rating-photo-name" id="ratingPhotoName">Belum memilih foto</span>
-          </div>
-          <img id="ratingPhotoPreview" class="rating-photo-preview" alt="Pratinjau foto ulasan">
-          <div class="rating-photo-note">Foto akan diperkecil otomatis agar upload lebih ringan.</div>
-          <div class="rating-photo-error" id="ratingPhotoError"></div>
-          <button type="button" class="rating-submit" id="ratingSubmit">Kirim rating &amp; ulasan</button>
-          <div class="rating-status" id="ratingStatus"></div>
-        </div>
-      </div>
-    </div>
-
-    <div class="rating-list" id="ratingList"></div>
-  </div>
-</section>
-
-<section id="lokasi" class="section location">
-  <div class="wrap">
-    <div class="location-title"><p class="eyebrow">06 · DATANG LANGSUNG</p><h2>LOKASI STAND</h2></div>
-    <div class="location-grid">
-      <div class="location-info">
-        <div class="info-box"><span>📍</span><div><b>Ruang R.21</b><small>Stand Kelas X-4 · SMAN 1 Babat</small></div></div>
-        <div class="info-box"><span>⏰</span><div><b>08.00–12.00 WIB</b><small>Jam bazar. Jam ambil ditulis sendiri saat checkout.</small></div></div>
-        <div class="info-box"><span>🧺</span><div><b>Ambil pesanan</b><small>Tunjukkan nama dan rincian pesanan saat datang ke stand.</small></div></div>
-        <div class="location-social-label">MEDIA SOSIAL KELAS X-4</div>
-        <div class="creator-social" aria-label="Media sosial kelas X-4">
-          <a class="social-link" href="https://www.instagram.com/10fourth?igsh=MTN2dnl2bXJtZDNsMw==" target="_blank" rel="noopener" aria-label="Instagram kelas X-4">
-            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 2h10a5 5 0 0 1 5 5v10a5 5 0 0 1-5 5H7a5 5 0 0 1-5-5V7a5 5 0 0 1 5-5Zm0 2a3 3 0 0 0-3 3v10a3 3 0 0 0 3 3h10a3 3 0 0 0 3-3V7a3 3 0 0 0-3-3H7Zm5 3.5A4.5 4.5 0 1 1 7.5 12 4.5 4.5 0 0 1 12 7.5Zm0 2A2.5 2.5 0 1 0 14.5 12 2.5 2.5 0 0 0 12 9.5ZM17.5 6a1 1 0 1 1-1 1 1 1 0 0 1-1 1 1 1 0 0 1 1-1Z"/></svg>
-            Instagram · @10fourth
-          </a>
-          <a class="social-link" href="https://www.tiktok.com/@10fourth?_r=1&_t=ZS-98nPT0GOXZN" target="_blank" rel="noopener" aria-label="TikTok kelas X-4">
-            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19.6 7.1a6.1 6.1 0 0 1-3.7-1.2v8.2A5.9 5.9 0 1 1 10.8 8v3a2.9 2.9 0 1 0 2.1 2.8V2.8h3a6.1 6.1 0 0 0 3.7 3.2v1.1h0Z"/></svg>
-            TikTok · @10fourth
-          </a>
-        </div>
-      </div>
-      <figure class="map-card">
-        <div class="map-stage"><img src="https://cdn.phototourl.com/free/2026-08-12-5b47454c-4ebf-428a-bd57-13b83eb47f70.jpg" alt="Denah lokasi bazar SMAN 1 Babat" loading="lazy"></div>
-        <figcaption>DENAH · R.21 · SMAN 1 BABAT</figcaption>
-      </figure>
-    </div>
-  </div>
-</section>
-
-<section id="kontak" class="section contact">
-  <div class="wrap contact-inner">
-    <div><p class="eyebrow" style="color:#ffe0a0">07 · PESAN SEKARANG</p><h2>TINGGAL PILIH,<br>TINGGAL PESAN.</h2><p>Pesanan akan dirangkum otomatis. Isi nama, kelas, dan jam ambil, lalu lanjutkan ke WhatsApp pemesanan bazar.</p></div>
-    <button class="contact-btn" id="contactCart" type="button">🧺 BUKA KERANJANG & PESAN</button>
-  </div>
-</section>
-</main>
-
-<footer class="footer">
-  <div class="wrap footer-top">
-    <div class="footer-brand">
-      <div class="footer-logo"><img src="https://cdn.phototourl.com/free/2026-08-11-9d3acbca-14ae-46ba-b2a3-0575da630d03.png" alt="Logo Alvian"></div>
-      <div><strong>Alvian Bagus · X-4</strong><small>Pembuat website bazar</small></div>
-    </div>
-    <div class="footer-actions">
-      <a class="footer-link" href="https://wa.me/6285727298747" target="_blank" rel="noopener">
-        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a9.6 9.6 0 0 0-8.3 14.4L2 22l5.8-1.5A9.6 9.6 0 1 0 12 2Zm0 2a7.6 7.6 0 0 1 6.6 11.4 7.4 7.4 0 0 1-6.6 3.8 7.5 7.5 0 0 1-3.5-.9l-.5-.3-3.4.9.9-3.3-.3-.5A7.6 7.6 0 0 1 12 4Zm-3 3.3c-.2 0-.5.1-.7.4-.2.3-.8.8-.8 1.9s.8 2.2.9 2.4c.1.2 1.6 2.6 3.9 3.5 1.9.8 2.3.6 2.7.6.4 0 1.3-.5 1.5-1 .2-.5.2-.9.2-1 0-.1-.2-.2-.5-.4l-1.4-.7c-.3-.1-.5-.1-.7.1l-.5.7c-.2.2-.4.2-.7.1-.3-.2-1.1-.4-2.1-1.3-.8-.7-1.3-1.5-1.4-1.8-.1-.2 0-.4.1-.5l.4-.4c.1-.1.1-.3.2-.5.1-.2 0-.4-.1-.5L9.6 7.6c-.1-.2-.3-.3-.6-.3Z"/></svg>
-        0857 2729 8747
-      </a>
-      <a class="footer-link" href="https://tiktok.com/@mozillx" target="_blank" rel="noopener">TikTok @mozillx</a>
-      <a class="footer-link" href="https://www.instagram.com/alvianbagus321" target="_blank" rel="noopener">Instagram @alvianbagus321</a>
-    </div>
-    <div class="footer-credit"><strong>Created by: Alvian Bagus (X-4)</strong><span>SMAN 1 Babat · Bazar Jogja 2026</span></div>
-  </div>
-</footer>
-
-<button class="floating-cart" id="floatingCart" type="button" aria-label="Buka keranjang"><span class="icon">🧺</span><span>Keranjang</span><b id="floatCount">0</b></button>
-<div class="cart-hint" id="cartHint">Pesananmu masuk ke keranjang ↑</div>
-<div class="toast" id="toast"></div>
-<div class="fly-layer" id="flyLayer"></div>
-
-<div class="overlay" id="cartOverlay"></div>
-<aside class="drawer" id="drawer" aria-label="Keranjang">
-  <div class="drawer-head"><div><p class="eyebrow">PESANAN</p><h3>Keranjangmu</h3></div><button id="closeCart" type="button">✕</button></div>
-  <div class="drawer-body" id="cartBody"></div>
-  <div class="drawer-foot"><div class="total"><span>Total</span><strong id="cartTotal">Rp 0</strong></div><button class="checkout" id="checkoutButton" type="button" disabled>LANJUT PESAN ↗</button></div>
-</aside>
-
-<div class="modal" id="checkoutModal">
-  <div class="modal-card">
-    <div class="modal-head"><div><p class="eyebrow">SEBELUM DIKIRIM</p><h3>Data Pesanan</h3></div><button id="closeCheckout" type="button">✕</button></div>
-    <p class="modal-sub">Isi nama, kelas, dan jam pengambilan. Setelah itu WhatsApp akan terbuka dengan rincian pesanan.</p>
-    <form id="checkoutForm" novalidate>
-      <label>Nama<input id="name" maxlength="60" placeholder="Nama kamu" autocomplete="name"></label><small class="error" id="nameErr">Nama wajib diisi.</small>
-      <label>Kelas<input id="className" maxlength="20" placeholder="Contoh: X-4"></label><small class="error" id="classErr">Kelas wajib diisi.</small>
-      <label>Jam ambil<input id="pickup" maxlength="25" placeholder="Contoh: 10.15 WIB" autocomplete="off"></label><small class="error" id="timeErr">Jam ambil wajib diisi.</small>
-      <div class="summary" id="summary"></div>
-      <div class="modal-actions"><button class="btn btn-outline-light" id="cancelCheckout" type="button" style="color:var(--ink);border-color:var(--line);background:transparent">BATAL</button><button class="btn btn-primary" type="submit">KIRIM KE WHATSAPP ↗</button></div>
-    </form>
-  </div>
-</div>
-
-<div class="poster-modal" id="posterModal">
-  <div class="poster-box"><button class="poster-close" id="closePoster" type="button" aria-label="Tutup">✕</button><img src="https://cdn.phototourl.com/free/2026-08-11-6959c21d-31d5-4198-ac27-bd9a14b50514.jpg" alt="Poster Bazar X-4"></div>
-</div>
-<iframe name="ratingSubmitFrame" id="ratingSubmitFrame" title="Pengiriman rating" style="display:none"></iframe>
-<form id="ratingSubmitForm" action="https://script.google.com/macros/s/AKfycbzgmPhlKkchSiAkjue26qyDQqL6m5H28jM9tEMrydNLRY14TZ7dzOao68v_sLLXD1sr/exec" method="POST" target="ratingSubmitFrame" style="display:none">
-  <input name="action" id="rfAction">
-  <input name="idToken" id="rfToken">
-  <input name="rating" id="rfRating">
-  <input name="displayName" id="rfName">
-  <input name="review" id="rfReview">
-  <input name="photoData" id="rfPhotoData">
-  <input name="photoMime" id="rfPhotoMime">
-  <input name="photoName" id="rfPhotoName">
-</form>
-
-<script>
-(function(){
-  "use strict";
-
-  const PRODUCTS={
-    bakmi:{name:"Bakmi Ayam",price:12000,image:"https://iili.io/C6Y20Mb.jpg"},
-    cincau:{name:"Es Kopi Joss Cincau",price:5000,image:"https://iili.io/C6YqPMF.jpg"},
-    bakpia:{name:"Bakpia Kukus Jogja",price:6000,image:"https://iili.io/C6Y2McQ.jpg"},
-    paket1:{name:"Paket 1 · Bakpia + Cincau",price:17000,image:"https://cdn.phototourl.com/free/2026-08-11-c81d2500-1038-4397-a3c5-2aa0c8c8a66b.jpg",detail:"2 pcs Bakpia Kukus + 1 Es Kopi Joss Cincau"},
-    paket2:{name:"Paket 2 · Bakmi + Cincau",price:17000,image:"https://cdn.phototourl.com/free/2026-08-11-fc592fff-b01d-415d-810a-44acfc3c24a6.jpg",detail:"1 Bakmi Ayam + 1 Es Kopi Joss Cincau"}
-  };
-
-  /* ====== KONFIGURASI RATING GOOGLE ======
-     Ganti dua nilai di bawah ini sesuai panduan setup yang diberikan.
-     Selama masih "GANTI_...", tombol login akan disembunyikan otomatis
-     dan section rating hanya menampilkan rata-rata (kosong dulu). */
-  const RATING_CONFIG={
-  clientId:"893588662175-o4vkqhi4hvvrac5cb9t8l17hgl260lf3.apps.googleusercontent.com",
-  apiUrl:"https://script.google.com/macros/s/AKfycbz0VtGoJcqKKgqViNormmfeKHz1dwBS9G0Vdn9ZNoAEAcZU74fQ1gKbN8Wpo9MjCPlH/exec"
-};
-  const RATING_READY=!RATING_CONFIG.clientId.startsWith("GANTI_")&&!RATING_CONFIG.apiUrl.startsWith("GANTI_");
-
-  const $=id=>document.getElementById(id);
-  const money=n=>"Rp "+Number(n).toLocaleString("id-ID");
-  let cart={};
-  try{cart=JSON.parse(localStorage.getItem("x4-bazar-cart-v6")||"{}")||{};}catch(e){cart={};}
-
-  const count=()=>Object.values(cart).reduce((a,b)=>a+(Number(b)||0),0);
-  const total=()=>Object.entries(cart).reduce((a,[id,q])=>a+(PRODUCTS[id]?.price||0)*(Number(q)||0),0);
-
-  function save(){localStorage.setItem("x4-bazar-cart-v6",JSON.stringify(cart));}
-  function esc(v){return String(v).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
-
-  function render(){
-    document.querySelectorAll("[data-qty]").forEach(el=>el.textContent=cart[el.dataset.qty]||0);
-    $("topCount").textContent=count();
-    $("floatCount").textContent=count();
-
-    const ids=Object.keys(cart).filter(id=>PRODUCTS[id]&&Number(cart[id])>0);
-    if(!ids.length){
-      $("cartBody").innerHTML='<div class="empty">Keranjang masih kosong.<br>Pilih menu dulu.</div>';
-    }else{
-      $("cartBody").innerHTML=ids.map(id=>{
-        const p=PRODUCTS[id],q=Number(cart[id]);
-        return '<div class="cart-row"><div class="cart-name">'+esc(p.name)+'<small>'+(esc(p.detail||money(p.price)))+' × '+q+'</small></div><div class="cart-price">'+money(p.price*q)+'</div><button class="remove" type="button" data-remove="'+id+'">✕</button></div>';
-      }).join("");
-      document.querySelectorAll("[data-remove]").forEach(b=>b.addEventListener("click",()=>{delete cart[b.dataset.remove];save();render();}));
-    }
-    $("cartTotal").textContent=money(total());
-    $("checkoutButton").disabled=!ids.length;
+const SHEET_NAME = "Ratings";
+const DRIVE_FOLDER_ID = "1TBZ8yMjqqn8nUVpfkp2wVdxw47L1yNXU";
+const ADMIN_EMAIL = "alvianbagus321@gmail.com";
+
+const GOOGLE_CLIENT_ID =
+  "893588662175-o4vkqhi4hvvrac5cb9t8l17hgl260lf3.apps.googleusercontent.com";
+
+const HEADERS = [
+  "Timestamp",
+  "Email",
+  "DisplayName",
+  "Rating",
+  "GoogleName",
+  "Picture",
+  "Review",
+  "PhotoURL"
+];
+
+
+/* =========================
+   SHEET
+========================= */
+
+function getSheet_() {
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+
+  let sheet = ss.getSheetByName(SHEET_NAME);
+
+  if (!sheet) {
+    sheet = ss.insertSheet(SHEET_NAME);
   }
 
-  function toast(msg){
-    $("toast").textContent=msg;$("toast").classList.add("show");
-    clearTimeout(window.__toast);window.__toast=setTimeout(()=>$("toast").classList.remove("show"),1900);
-  }
+  const needed = HEADERS.length;
 
-  function pulseCart(){
-    [$("topCart"),$("floatingCart")].forEach(el=>{
-      if(!el)return;el.classList.remove("pop");void el.offsetWidth;el.classList.add("pop");
-    });
-    $("cartHint").classList.add("show");clearTimeout(window.__hint);
-    window.__hint=setTimeout(()=>$("cartHint").classList.remove("show"),2300);
-  }
+  const currentLastCol = Math.max(sheet.getLastColumn(), 1);
 
-  function fly(source,id){
-    /* Selalu prioritaskan keranjang di header. Pada layout yang menyembunyikannya,
-       fallback ke floating cart. */
-    const top=$("topCart"),floating=$("floatingCart");
-    const topRect=top?.getBoundingClientRect();
-    const target=topRect&&topRect.width>0&&topRect.height>0?top:floating;
-    if(!source||!target||!PRODUCTS[id]){pulseCart();return;}
+  const current = sheet
+    .getRange(1, 1, 1, Math.max(currentLastCol, needed))
+    .getValues()[0];
 
-    const s=source.getBoundingClientRect(),t=target.getBoundingClientRect();
-    if(!s.width||!s.height||!t.width||!t.height){pulseCart();return;}
+  let changed = false;
 
-    const sx=s.left+s.width/2, sy=s.top+s.height/2;
-    const tx=t.left+t.width/2, ty=t.top+t.height/2;
-    const dx=tx-sx,dy=ty-sy;
-    const img=document.createElement("img");
-    img.className="fly-item";
-    img.src=PRODUCTS[id].image;
-    img.alt="";
-    img.style.left=(sx-39)+"px";
-    img.style.top=(sy-39)+"px";
-    $("flyLayer").appendChild(img);
-
-    /* Sedikit partikel cahaya membuat lintasan terasa seperti premium motion,
-       bukan sekadar gambar yang berpindah lurus. */
-    for(let i=0;i<3;i++){
-      const spark=document.createElement("i");
-      spark.className="fly-spark";
-      spark.style.left=(sx+(Math.random()*18-9)-3)+"px";
-      spark.style.top=(sy+(Math.random()*18-9)-3)+"px";
-      spark.style.animationDelay=(i*70)+"ms";
-      $("flyLayer").appendChild(spark);
-      setTimeout(()=>spark.remove(),900);
-    }
-
-    const lift=Math.max(55,Math.min(125,Math.abs(dx)*.16+Math.abs(dy)*.08));
-    const dir=dx>=0?1:-1;
-    const duration=820;
-
-    const animation=img.animate([
-      {transform:"translate3d(0,0,0) scale(1) rotate(0deg)",opacity:1,offset:0},
-      {transform:"translate3d("+(dx*.42)+"px,"+(dy*.42-lift)+"px,0) scale(.78) rotate("+(dir*7)+"deg)",opacity:.98,offset:.42},
-      {transform:"translate3d("+dx+"px,"+dy+"px,0) scale(.14) rotate("+(dir*18)+"deg)",opacity:0,offset:1}
-    ],{duration,easing:"cubic-bezier(.18,.78,.18,1)",fill:"forwards"});
-
-    animation.finished.then(()=>{
-      img.remove();
-      pulseCart();
-    }).catch(()=>{img.remove();pulseCart();});
-    setTimeout(()=>img.remove(),duration+180);
-  }
-
-  function change(id,delta){
-    if(!PRODUCTS[id])return;
-    const next=Math.max(0,(Number(cart[id])||0)+(Number(delta)||0));
-    if(next)cart[id]=next;else delete cart[id];
-    save();render();
-  }
-
-  function add(id,source){
-    change(id,1);fly(source,id);toast(PRODUCTS[id].name+" masuk ke keranjang");
-  }
-
-  function openCart(){$("drawer").classList.add("open");$("cartOverlay").classList.add("open");document.body.classList.add("no-scroll");}
-  function closeCart(){$("drawer").classList.remove("open");$("cartOverlay").classList.remove("open");if(!$("checkoutModal").classList.contains("open"))document.body.classList.remove("no-scroll");}
-
-  function openCheckout(){
-    if(!count()){toast("Keranjang masih kosong");return;}
-    const ids=Object.keys(cart).filter(id=>PRODUCTS[id]&&Number(cart[id])>0);
-    $("summary").innerHTML=ids.map(id=>{const p=PRODUCTS[id],q=Number(cart[id]);return '<div class="sum"><span>'+esc(p.name)+' × '+q+'</span><b>'+money(p.price*q)+'</b></div>';}).join("")
-      +'<div class="sum total"><span>Total</span><b>'+money(total())+'</b></div>';
-    $("checkoutModal").classList.add("open");document.body.classList.add("no-scroll");setTimeout(()=>$("name").focus(),80);
-  }
-  function closeCheckout(){$("checkoutModal").classList.remove("open");if(!$("drawer").classList.contains("open"))document.body.classList.remove("no-scroll");}
-
-  function openPoster(){$("posterModal").classList.add("open");document.body.classList.add("no-scroll");}
-  function closePoster(){$("posterModal").classList.remove("open");if(!$("drawer").classList.contains("open")&&!$("checkoutModal").classList.contains("open"))document.body.classList.remove("no-scroll");}
-
-  function setTheme(theme){
-    document.documentElement.dataset.theme=theme;
-    localStorage.setItem("x4-theme-v8",theme);
-    document.querySelectorAll("[data-theme-choice]").forEach(b=>b.classList.toggle("active",b.dataset.themeChoice===theme));
-    document.querySelectorAll("[data-mobile-theme]").forEach(b=>b.classList.toggle("active",b.dataset.mobileTheme===theme));
-    const meta=document.querySelector('meta[name="theme-color"]');
-    if(meta)meta.content=({day:"#dcebe2",dusk:"#0a2019",night:"#081c16",forest:"#061a14",sage:"#d7e7dd",moon:"#0f2b21"})[theme]||"#061a14";
-  }
-
-  function initReveal(){
-    const targets=document.querySelectorAll(".hero,.quick,.section,.story,.location,.contact,.footer,.menu-card,.package-card,.info-box,.poster-frame");
-    if(!("IntersectionObserver" in window)){targets.forEach(el=>el.classList.add("is-visible"));return;}
-    const io=new IntersectionObserver((entries,observer)=>{
-      entries.forEach(entry=>{if(entry.isIntersecting){entry.target.classList.add("is-visible");observer.unobserve(entry.target);}});
-    },{threshold:.1,rootMargin:"0px 0px -8% 0px"});
-    targets.forEach(el=>io.observe(el));
-  }
-
-  function initScrollFx(){
-    const reduceMotion=window.matchMedia&&window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const bar=$("scrollProgress"),heroBg=document.querySelector(".hero-bg");
-    let ticking=false;
-    function update(){
-      const doc=document.documentElement;
-      const max=doc.scrollHeight-doc.clientHeight;
-      const y=window.scrollY||doc.scrollTop||0;
-      if(bar)bar.style.width=(max>0?Math.min(100,(y/max)*100):0)+"%";
-      if(heroBg&&!reduceMotion&&y<window.innerHeight*1.2){
-        heroBg.style.transform="translate3d(0,"+(y*.12)+"px,0) scale(1.08)";
-      }
-      ticking=false;
-    }
-    window.addEventListener("scroll",function(){
-      if(!ticking){requestAnimationFrame(update);ticking=true;}
-    },{passive:true});
-    update();
-  }
-
-  /* ====== RATING & LOGIN GOOGLE ====== */
-  let ratingToken=null,ratingProfile=null,ratingMyStars=0,ratingPhotoData="",ratingPhotoMime="",ratingPhotoName="";
-
-  function decodeJwt(token){
-    try{
-      const base64=token.split(".")[1].replace(/-/g,"+").replace(/_/g,"/");
-      const json=decodeURIComponent(atob(base64).split("").map(c=>"%"+("00"+c.charCodeAt(0).toString(16)).slice(-2)).join(""));
-      return JSON.parse(json);
-    }catch(e){return null;}
-  }
-
-  /* GET tetap dipakai untuk membaca data karena endpoint Apps Script
-     sudah terbukti bisa diakses dari GitHub Pages. Untuk POST, kita
-     pakai hidden form + iframe agar tidak bergantung pada CORS response. */
-  function ratingGet(params){
-    const qs=new URLSearchParams(params).toString();
-    return fetch(RATING_CONFIG.apiUrl+"?"+qs,{redirect:"follow",credentials:"omit",cache:"no-store"})
-      .then(async r=>{
-        const text=await r.text();
-        try{return JSON.parse(text);}
-        catch(e){throw new Error("Respons server bukan JSON ("+r.status+").");}
-      });
-  }
-
-  function ratingPost(payload){
-    /*
-      Apps Script tidak menyediakan CORS untuk POST biasa. Karena itu kita
-      kirim sebagai text/plain + no-cors. Ini adalah simple request sehingga
-      browser Android tidak melakukan preflight. Respons POST memang opaque,
-      jadi keberhasilan selalu diverifikasi ulang lewat GET /me atau /summary.
-    */
-    return new Promise(async (resolve,reject)=>{
-      try{
-        const response=await fetch(RATING_CONFIG.apiUrl,{
-          method:"POST",
-          mode:"no-cors",
-          redirect:"follow",
-          credentials:"omit",
-          cache:"no-store",
-          headers:{"Content-Type":"text/plain;charset=UTF-8"},
-          body:JSON.stringify(payload)
-        });
-
-        // no-cors menghasilkan opaque response. Tunggu Apps Script selesai,
-        // lalu baca hasil sebenarnya melalui endpoint GET.
-        const sleep=ms=>new Promise(r=>setTimeout(r,ms));
-
-        for(let attempt=0;attempt<10;attempt++){
-          await sleep(attempt===0?1200:1000);
-
-          try{
-            if(payload.action==="delete"){
-              const summary=await ratingGet({action:"summary",idToken:payload.idToken});
-              resolve({ok:true,summary:summary});
-              return;
-            }
-
-            const me=await ratingGet({action:"me",idToken:payload.idToken});
-            if(me&&me.ok){
-              if(payload.action==="rate"){
-                const wanted=Number(payload.rating)||0;
-                const got=Number(me.me?.rating)||0;
-                const wantedReview=String(payload.review||"").trim();
-                const gotReview=String(me.me?.review||"").trim();
-                const photoExpected=!!payload.photoData;
-                const photoOk=!photoExpected || !!String(me.me?.photoUrl||"");
-
-                if(got===wanted && gotReview===wantedReview && photoOk){
-                  const summary=await ratingGet({action:"summary",idToken:payload.idToken});
-                  resolve({ok:true,summary:summary});
-                  return;
-                }
-              }else if(payload.action==="setName"){
-                const wantedName=String(payload.displayName||"").trim();
-                if(String(me.me?.displayName||"").trim()===wantedName){
-                  const summary=await ratingGet({action:"summary",idToken:payload.idToken});
-                  resolve({ok:true,summary:summary});
-                  return;
-                }
-              }else{
-                resolve(me);
-                return;
-              }
-            }
-          }catch(err){
-            // Apps Script mungkin masih memproses. Coba lagi.
-          }
-        }
-
-        reject(new Error("Server belum mengonfirmasi data. Pastikan Apps Script sudah versi terbaru."));
-      }catch(err){
-        reject(err instanceof Error?err:new Error(String(err||"Gagal mengirim data.")));
-      }
-    });
-  }
-
-  function renderStars(container,value){
-    container.querySelectorAll(".star-btn").forEach(b=>{
-      b.classList.toggle("active",Number(b.dataset.star)<=value);
-    });
-  }
-
-  function renderSummary(data){
-    const avg=Number(data.average||0);
-    $("ratingAvg").textContent=avg>0?avg.toFixed(1):"–";
-    $("ratingStarsDisplay").textContent="★★★★★";
-    const pct=Math.max(0,Math.min(5,avg))/5*100;
-    $("ratingStarsDisplay").style.background="linear-gradient(90deg,var(--gold) "+pct+"%,var(--line) "+pct+"%)";
-    $("ratingStarsDisplay").style.webkitBackgroundClip="text";
-    $("ratingStarsDisplay").style.backgroundClip="text";
-    $("ratingStarsDisplay").style.webkitTextFillColor="transparent";
-    const c=Number(data.count||0);
-    $("ratingCount").textContent=c>0?(c+" rating masuk"):"Belum ada rating";
-    const list=$("ratingList");
-    list.innerHTML=(data.list||[]).map(item=>{
-      const stars="★".repeat(Number(item.rating)||0);
-      const review=item.review?'<div class="rating-review-text">'+esc(item.review)+'</div>':"";
-      const photo=item.photoUrl?'<img class="rating-list-photo" src="'+esc(item.photoUrl)+'" alt="Foto ulasan" loading="lazy">':"";
-      const del=item.canDelete?'<button type="button" class="rating-delete-btn" data-delete-row="'+esc(item.row)+'">Hapus ulasan</button>':"";
-      return '<div class="rating-list-item"><div class="rating-list-top"><b>'+esc(item.displayName||"Pembeli")+'</b><span>'+stars+'</span></div>'+review+photo+del+'</div>';
-    }).join("");
-    list.querySelectorAll("[data-delete-row]").forEach(btn=>btn.addEventListener("click",()=>deleteReview(Number(btn.dataset.deleteRow))));
-  }
-
-  function fetchSummary(){
-    if(!RATING_READY)return;
-    const params={action:"summary"};
-    if(ratingToken)params.idToken=ratingToken;
-    ratingGet(params).then(renderSummary).catch(()=>{});
-  }
-
-  function showLoggedOut(){
-    $("ratingLoggedOut").hidden=false;
-    $("ratingLoggedIn").hidden=true;
-  }
-
-  function showLoggedIn(){
-    $("ratingLoggedOut").hidden=true;
-    $("ratingLoggedIn").hidden=false;
-    $("ratingAvatar").src=ratingProfile.picture||"";
-    $("ratingDisplayName").textContent=ratingProfile.displayName||ratingProfile.name||"Pembeli";
-    ratingMyStars=Number(ratingProfile.rating||0);
-    renderStars($("ratingStarsInput"),ratingMyStars);
-    $("ratingReview").value=ratingProfile.review||"";
-    $("ratingStatus").textContent=ratingMyStars>0?"Rating kamu tersimpan. Kamu bisa mengubah rating/ulasan.":"Pilih bintang, tulis ulasan, lalu kirim.";
-  }
-
-  function handleGoogleCredential(response){
-    ratingToken=response.credential;
-    const payload=decodeJwt(ratingToken);
-    if(!payload)return;
-    sessionStorage.setItem("x4-rating-token",ratingToken);
-    ratingProfile={email:payload.email,name:payload.name,picture:payload.picture,displayName:payload.name,rating:0,review:"",photoUrl:"",row:0};
-    showLoggedIn();
-    $("ratingStatus").textContent="Menghubungkan…";
-    ratingGet({action:"me",idToken:ratingToken}).then(res=>{
-      if(!res.ok){$("ratingStatus").textContent=res.error||"Gagal memuat data akun.";return;}
-      ratingProfile.displayName=res.me.displayName||ratingProfile.name;
-      ratingProfile.rating=res.me.rating||0;
-      ratingProfile.review=res.me.review||"";
-      ratingProfile.photoUrl=res.me.photoUrl||"";
-      ratingProfile.row=Number(res.me.row||0);
-      showLoggedIn();
-      fetchSummary();
-    }).catch(()=>{$("ratingStatus").textContent="Gagal terhubung ke server rating.";});
-  }
-
-  function ratingLogout(){
-    ratingToken=null;ratingProfile=null;ratingMyStars=0;
-    sessionStorage.removeItem("x4-rating-token");
-    showLoggedOut();
-    fetchSummary();
-    if(RATING_READY&&window.google?.accounts?.id)google.accounts.id.disableAutoSelect();
-  }
-
-  function resizeImage(file){
-    return new Promise((resolve,reject)=>{
-      const reader=new FileReader();
-      reader.onload=()=>{
-        const img=new Image();
-        img.onload=()=>{
-          const max=1000;
-          const scale=Math.min(1,max/Math.max(img.width,img.height));
-          const canvas=document.createElement("canvas");
-          canvas.width=Math.max(1,Math.round(img.width*scale));
-          canvas.height=Math.max(1,Math.round(img.height*scale));
-          const ctx=canvas.getContext("2d");
-          ctx.drawImage(img,0,0,canvas.width,canvas.height);
-          const data=canvas.toDataURL("image/jpeg",.72);
-          resolve({data:data.split(",")[1],mime:"image/jpeg",name:(file.name||"foto").replace(/\.[^.]+$/,"")+".jpg",preview:data});
-        };
-        img.onerror=()=>reject(new Error("Foto tidak bisa dibaca."));
-        img.src=reader.result;
-      };
-      reader.onerror=()=>reject(new Error("Gagal membaca foto."));
-      reader.readAsDataURL(file);
-    });
-  }
-
-  async function handlePhotoChange(file){
-    $("ratingPhotoError").textContent="";
-    ratingPhotoData="";ratingPhotoMime="";ratingPhotoName="";
-    $("ratingPhotoPreview").classList.remove("show");
-    $("ratingPhotoName").textContent="Belum memilih foto";
-    if(!file)return;
-    if(!file.type.startsWith("image/")){
-      $("ratingPhotoError").textContent="File harus berupa gambar.";
-      return;
-    }
-    if(file.size>8*1024*1024){
-      $("ratingPhotoError").textContent="Foto maksimal 8 MB sebelum diperkecil.";
-      return;
-    }
-    try{
-      const x=await resizeImage(file);
-      ratingPhotoData=x.data;ratingPhotoMime=x.mime;ratingPhotoName=x.name;
-      $("ratingPhotoName").textContent=file.name;
-      $("ratingPhotoPreview").src=x.preview;
-      $("ratingPhotoPreview").classList.add("show");
-    }catch(e){
-      $("ratingPhotoError").textContent=e.message||"Gagal memproses foto.";
+  for (let i = 0; i < HEADERS.length; i++) {
+    if (String(current[i] || "") !== HEADERS[i]) {
+      current[i] = HEADERS[i];
+      changed = true;
     }
   }
 
-  async function submitRating(){
-    if(!ratingToken){toast("Login dulu untuk kasih rating");return;}
-    const stars=ratingMyStars;
-    if(!stars){$("ratingStatus").textContent="Pilih bintang dulu.";return;}
-    const review=$("ratingReview").value.trim();
-    $("ratingSubmit").disabled=true;
-    $("ratingStatus").textContent="Mengirim rating, ulasan, dan foto…";
-    try{
-      const res=await ratingPost({
-        action:"rate",
-        idToken:ratingToken,
-        rating:stars,
-        review:review,
-        photoData:ratingPhotoData,
-        photoMime:ratingPhotoMime,
-        photoName:ratingPhotoName
-      });
-      if(res&&res.ok===false)throw new Error(res.error||"Gagal menyimpan.");
-      ratingProfile.rating=stars;
-      ratingProfile.review=review;
-      $("ratingStatus").textContent="Terima kasih! Rating dan ulasan tersimpan.";
-      setTimeout(fetchSummary,900);
-    }catch(e){
-      $("ratingStatus").textContent="Gagal mengirim rating. Coba lagi.";
-    }finally{
-      $("ratingSubmit").disabled=false;
-    }
+  if (changed || sheet.getLastRow() === 0) {
+    sheet
+      .getRange(1, 1, 1, needed)
+      .setValues([HEADERS]);
   }
 
-  async function deleteReview(row){
-    if(!ratingToken){toast("Login dulu untuk menghapus ulasan");return;}
-    if(!confirm("Hapus ulasan ini beserta fotonya? Tindakan ini tidak bisa dibatalkan."))return;
-    try{
-      const res=await ratingPost({action:"delete",idToken:ratingToken,row:row});
-      if(!res||res.ok===false)throw new Error((res&&res.error)||"Gagal menghapus ulasan.");
-      toast("Ulasan berhasil dihapus");
-      if(ratingProfile && Number(row)===Number(ratingProfile.row)){
-        ratingProfile.rating=0;ratingProfile.review="";ratingProfile.photoUrl="";ratingMyStars=0;
-        $("ratingReview").value="";
-        $("ratingPhotoName").textContent="Belum memilih foto";
-        $("ratingPhotoPreview").classList.remove("show");
-        ratingPhotoData="";ratingPhotoMime="";ratingPhotoName="";
-        renderStars($("ratingStarsInput"),0);
-        $("ratingStatus").textContent="Ulasan kamu sudah dihapus.";
-      }
-      renderSummary(res.summary||{average:0,count:0,list:[]});
-    }catch(e){toast(e.message||"Gagal menghapus ulasan.");}
-  }
+  return sheet;
+}
 
-  function submitDisplayName(name){
-    if(!ratingToken||!name.trim())return;
-    ratingPost({action:"setName",idToken:ratingToken,displayName:name.trim()}).then(res=>{
-      if(res&&res.ok===false)throw new Error(res.error||"Gagal menyimpan nama");
-      ratingProfile.displayName=name.trim();
-      $("ratingDisplayName").textContent=ratingProfile.displayName;
-      if(res.summary)renderSummary(res.summary); else setTimeout(fetchSummary,500);
-      toast("Nama tampilan diperbarui");
-    }).catch(()=>{toast("Gagal menyimpan nama. Coba lagi.");});
-  }
 
-  function initRating(){
-    fetchSummary();
-    if(!RATING_READY){
-      $("ratingNotConfigured").hidden=false;
-      return;
-    }
-    if(window.google?.accounts?.id){
-      google.accounts.id.initialize({client_id:RATING_CONFIG.clientId,callback:handleGoogleCredential,auto_select:false});
-      google.accounts.id.renderButton($("gsiButton"),{theme:"outline",size:"large",shape:"pill",text:"signin_with",locale:"id"});
-    }
-    const savedToken=sessionStorage.getItem("x4-rating-token");
-    if(savedToken){
-      const payload=decodeJwt(savedToken);
-      if(payload&&payload.exp&&payload.exp*1000>Date.now())handleGoogleCredential({credential:savedToken});
-      else sessionStorage.removeItem("x4-rating-token");
-    }
-    $("ratingStarsInput").addEventListener("click",function(e){
-      const btn=e.target.closest(".star-btn");if(!btn)return;
-      ratingMyStars=Number(btn.dataset.star);renderStars(this,ratingMyStars);
-      $("ratingStatus").textContent="Rating dipilih. Tekan Kirim rating & ulasan.";
-    });
-    $("ratingStarsInput").addEventListener("mousemove",function(e){
-      const btn=e.target.closest(".star-btn");if(!btn)return;
-      renderStars(this,Number(btn.dataset.star));
-    });
-    $("ratingStarsInput").addEventListener("mouseleave",function(){renderStars(this,ratingMyStars);});
-    $("ratingSubmit").addEventListener("click",submitRating);
-    $("ratingPhoto").addEventListener("change",function(){handlePhotoChange(this.files[0]);});
-    $("ratingLogout").addEventListener("click",ratingLogout);
-    $("editNameBtn").addEventListener("click",function(){
-      $("ratingNameInput").value=ratingProfile.displayName||"";
-      $("ratingNameEdit").hidden=false;
-      $("ratingNameInput").focus();
-    });
-    $("ratingNameCancel").addEventListener("click",function(){$("ratingNameEdit").hidden=true;});
-    $("ratingNameSave").addEventListener("click",function(){
-      submitDisplayName($("ratingNameInput").value);$("ratingNameEdit").hidden=true;
-    });
-    $("ratingNameInput").addEventListener("keydown",function(e){
-      if(e.key==="Enter"){e.preventDefault();submitDisplayName(this.value);$("ratingNameEdit").hidden=true;}
-      if(e.key==="Escape")$("ratingNameEdit").hidden=true;
-    });
-  }
+/* =========================
+   GOOGLE LOGIN
+========================= */
 
-  function closeMobileMenu(){$("mobileMenu").classList.remove("open");$("menuToggle").textContent="☰";}
+function verifyGoogleToken_(idToken) {
 
-  document.addEventListener("DOMContentLoaded",function(){
-    const savedTheme=localStorage.getItem("x4-theme-v8");
-    setTheme(["day","dusk","night","forest","sage","moon"].includes(savedTheme)?savedTheme:"forest");
-    render();
-    initReveal();
-    initScrollFx();
-    initRating();
+  const url =
+    "https://oauth2.googleapis.com/tokeninfo?id_token=" +
+    encodeURIComponent(idToken);
 
-    document.querySelectorAll("[data-theme-choice]").forEach(b=>b.addEventListener("click",()=>setTheme(b.dataset.themeChoice)));
-    document.querySelectorAll("[data-mobile-theme]").forEach(b=>b.addEventListener("click",()=>{setTheme(b.dataset.mobileTheme);}));
-
-    $("menuToggle").addEventListener("click",function(){
-      const open=$("mobileMenu").classList.toggle("open");
-      this.textContent=open?"✕":"☰";
-    });
-    document.querySelectorAll("#mobileMenu a").forEach(a=>a.addEventListener("click",closeMobileMenu));
-
-    document.querySelectorAll(".step").forEach(b=>b.addEventListener("click",function(){
-      const id=this.dataset.id,delta=Number(this.dataset.step),before=Number(cart[id]||0);
-      change(id,delta);
-      if(delta>0&&Number(cart[id]||0)>before){
-        const image=this.closest(".menu-card")?.querySelector(".menu-photo img");
-        fly(image,id);toast(PRODUCTS[id].name+" masuk ke keranjang");
-      }
-    }));
-
-    document.querySelectorAll("[data-add]").forEach(b=>b.addEventListener("click",function(){
-      const id=this.dataset.add;
-      const image=this.closest(".menu-card,.package-card")?.querySelector(".menu-photo img,.package-photo img");
-      add(id,image||this);
-    }));
-
-    $("topCart").addEventListener("click",openCart);
-    $("floatingCart").addEventListener("click",openCart);
-    $("contactCart").addEventListener("click",openCart);
-    $("closeCart").addEventListener("click",closeCart);
-    $("cartOverlay").addEventListener("click",closeCart);
-
-    $("checkoutButton").addEventListener("click",openCheckout);
-    $("closeCheckout").addEventListener("click",closeCheckout);
-    $("cancelCheckout").addEventListener("click",closeCheckout);
-
-    $("checkoutForm").addEventListener("submit",function(e){
-      e.preventDefault();
-      const name=$("name").value.trim(),cls=$("className").value.trim(),time=$("pickup").value.trim();
-      $("nameErr").classList.toggle("show",!name);$("classErr").classList.toggle("show",!cls);$("timeErr").classList.toggle("show",!time);
-      if(!name||!cls||!time)return;
-
-      const lines=Object.keys(cart).filter(id=>PRODUCTS[id]&&Number(cart[id])>0).map(id=>{
-        const p=PRODUCTS[id],q=Number(cart[id]);return "• "+p.name+" × "+q+" = "+money(p.price*q);
-      });
-
-      const message=[
-        "Halo Kak, saya mau pesan untuk Bazar Kelas X-4 SMAN 1 Babat.","",
-        "Nama: "+name,"Kelas: "+cls,"Jam ambil: "+time,"",...lines,"","Total: "+money(total()),"","Terima kasih!"
-      ].join("\n");
-
-      const url="https://wa.me/6288991477912?text="+encodeURIComponent(message);
-      const win=window.open(url,"_blank");
-      if(!win){toast("WhatsApp tidak bisa dibuka. Coba lagi.");return;}
-      closeCheckout();toast("Pesanan siap dikirim ke WhatsApp");
-    });
-
-    $("openPosterHero").addEventListener("click",openPoster);
-    $("openPosterInfo").addEventListener("click",openPoster);
-    $("openPosterImage").addEventListener("click",openPoster);
-    $("closePoster").addEventListener("click",closePoster);
-    $("posterModal").addEventListener("click",e=>{if(e.target.id==="posterModal")closePoster();});
-
-    document.addEventListener("keydown",function(e){
-      if(e.key!=="Escape")return;
-      if($("posterModal").classList.contains("open"))closePoster();
-      else if($("checkoutModal").classList.contains("open"))closeCheckout();
-      else if($("drawer").classList.contains("open"))closeCart();
-      else closeMobileMenu();
-    });
+  const res = UrlFetchApp.fetch(url, {
+    muteHttpExceptions: true
   });
-})();
-</script>
-</body>
-</html>
+
+  if (res.getResponseCode() !== 200) {
+    return null;
+  }
+
+  const data = JSON.parse(res.getContentText());
+
+  if (!data.email) {
+    return null;
+  }
+
+  // Pastikan token memang berasal dari Client ID kita
+  if (String(data.aud || "") !== GOOGLE_CLIENT_ID) {
+    return null;
+  }
+
+  return data;
+}
+
+
+/* =========================
+   CARI USER
+========================= */
+
+function findRow_(sheet, email) {
+
+  const values = sheet.getDataRange().getValues();
+
+  for (let i = 1; i < values.length; i++) {
+
+    if (
+      String(values[i][1] || "").toLowerCase() ===
+      String(email || "").toLowerCase()
+    ) {
+      return i + 1;
+    }
+
+  }
+
+  return -1;
+}
+
+
+/* =========================
+   RINGKASAN RATING
+========================= */
+
+function buildSummary_(sheet, limit, requesterEmail) {
+
+  const values = sheet.getDataRange().getValues();
+
+  let sum = 0;
+  let count = 0;
+
+  const list = [];
+
+  const requester =
+    String(requesterEmail || "").toLowerCase();
+
+  for (let i = 1; i < values.length; i++) {
+
+    const rating = Number(values[i][3]) || 0;
+
+    if (rating > 0) {
+
+      sum += rating;
+      count++;
+
+      const email =
+        String(values[i][1] || "").toLowerCase();
+
+      list.push({
+
+        row: i + 1,
+
+        displayName:
+          String(
+            values[i][2] ||
+            values[i][4] ||
+            "Pembeli"
+          ),
+
+        rating: rating,
+
+        review:
+          String(values[i][6] || ""),
+
+        photoUrl:
+          String(values[i][7] || ""),
+
+        canDelete:
+          !!requester &&
+          (
+            requester === ADMIN_EMAIL.toLowerCase() ||
+            requester === email
+          ),
+
+        ts: values[i][0]
+      });
+    }
+  }
+
+  // Terbaru di atas
+  list.sort(
+    (a, b) =>
+      new Date(b.ts) - new Date(a.ts)
+  );
+
+  return {
+
+    average:
+      count > 0
+        ? Math.round((sum / count) * 10) / 10
+        : 0,
+
+    count: count,
+
+    list:
+      list
+        .slice(0, limit || 8)
+        .map(x => ({
+
+          row: x.row,
+
+          displayName:
+            x.displayName,
+
+          rating:
+            x.rating,
+
+          review:
+            x.review,
+
+          photoUrl:
+            x.photoUrl,
+
+          canDelete:
+            x.canDelete
+
+        }))
+  };
+}
+
+
+/* =========================
+   OUTPUT JSON
+========================= */
+
+function jsonOut_(obj) {
+
+  return ContentService
+    .createTextOutput(
+      JSON.stringify(obj)
+    )
+    .setMimeType(
+      ContentService.MimeType.JSON
+    );
+}
+
+
+/*
+ * PENTING:
+ * POST sekarang juga mengembalikan JSON.
+ * Jangan menggunakan HtmlService di sini.
+ */
+
+function postResult_(obj) {
+
+  return ContentService
+    .createTextOutput(
+      JSON.stringify(obj)
+    )
+    .setMimeType(
+      ContentService.MimeType.JSON
+    );
+}
+
+
+/* =========================
+   DATA USER
+========================= */
+
+function getMe_(sheet, profile) {
+
+  const row =
+    findRow_(sheet, profile.email);
+
+  // Belum pernah memberikan rating
+  if (row === -1) {
+
+    return {
+
+      ok: true,
+
+      me: {
+
+        displayName:
+          profile.name || "Pembeli",
+
+        rating: 0,
+
+        review: "",
+
+        photoUrl: "",
+
+        row: 0
+      }
+    };
+  }
+
+  const values =
+    sheet
+      .getRange(
+        row,
+        1,
+        1,
+        HEADERS.length
+      )
+      .getValues()[0];
+
+  return {
+
+    ok: true,
+
+    me: {
+
+      displayName:
+        String(
+          values[2] ||
+          values[4] ||
+          profile.name ||
+          "Pembeli"
+        ),
+
+      rating:
+        Number(values[3]) || 0,
+
+      review:
+        String(values[6] || ""),
+
+      photoUrl:
+        String(values[7] || ""),
+
+      row: row
+    }
+  };
+}
+
+
+/* =========================
+   UPLOAD FOTO
+========================= */
+
+function savePhoto_(
+  photoData,
+  photoMime,
+  photoName
+) {
+
+  if (!photoData) {
+    return "";
+  }
+
+  const folder =
+    DriveApp.getFolderById(
+      DRIVE_FOLDER_ID
+    );
+
+  /*
+   * Bisa menerima:
+   * data:image/jpeg;base64,...
+   * atau base64 biasa
+   */
+
+  const match =
+    String(photoData).match(
+      /^data:[^;]+;base64,(.*)$/
+    );
+
+  const base64 =
+    match
+      ? match[1]
+      : String(photoData);
+
+  const bytes =
+    Utilities.base64Decode(base64);
+
+  const mime =
+    String(
+      photoMime || "image/jpeg"
+    ).toLowerCase();
+
+  const safeMime =
+    /^image\/(jpeg|png|webp|gif)$/.test(mime)
+      ? mime
+      : "image/jpeg";
+
+  const ext =
+    safeMime === "image/png"
+      ? "png"
+      : safeMime === "image/webp"
+        ? "webp"
+        : safeMime === "image/gif"
+          ? "gif"
+          : "jpg";
+
+  let name =
+    String(
+      photoName ||
+      ("rating-" + Date.now() + "." + ext)
+    )
+      .replace(
+        /[\\\/:*?"<>|#%{}\[\]]/g,
+        "_"
+      )
+      .slice(0, 100);
+
+  if (!/\.[A-Za-z0-9]+$/.test(name)) {
+    name += "." + ext;
+  }
+
+  const blob =
+    Utilities.newBlob(
+      bytes,
+      safeMime,
+      name
+    );
+
+  const file =
+    folder.createFile(blob);
+
+  /*
+   * Supaya foto bisa dilihat pengunjung.
+   */
+
+  try {
+
+    file.setSharing(
+      DriveApp.Access.ANYONE_WITH_LINK,
+      DriveApp.Permission.VIEW
+    );
+
+  } catch (err) {
+
+    // Jika akun Google tidak mengizinkan
+    // public sharing, upload tetap dilanjutkan.
+
+  }
+
+  return (
+    "https://drive.google.com/uc?export=view&id=" +
+    file.getId()
+  );
+}
+
+
+/* =========================
+   GET
+========================= */
+
+function doGet(e) {
+
+  const action =
+    String(
+      e.parameter.action || ""
+    );
+
+  const sheet =
+    getSheet_();
+
+
+  /* ---------- SUMMARY ---------- */
+
+  if (action === "summary") {
+
+    let requesterEmail = "";
+
+    const idToken =
+      String(
+        e.parameter.idToken || ""
+      );
+
+    if (idToken) {
+
+      const profile =
+        verifyGoogleToken_(idToken);
+
+      if (profile) {
+        requesterEmail =
+          profile.email;
+      }
+    }
+
+    return jsonOut_(
+      buildSummary_(
+        sheet,
+        8,
+        requesterEmail
+      )
+    );
+  }
+
+
+  /* ---------- ME ---------- */
+
+  if (action === "me") {
+
+    const idToken =
+      String(
+        e.parameter.idToken || ""
+      );
+
+    if (!idToken) {
+
+      return jsonOut_({
+        ok: false,
+        error: "Token tidak ada"
+      });
+    }
+
+    const profile =
+      verifyGoogleToken_(idToken);
+
+    if (!profile) {
+
+      return jsonOut_({
+        ok: false,
+        error:
+          "Token tidak valid, silakan login ulang."
+      });
+    }
+
+    return jsonOut_(
+      getMe_(
+        sheet,
+        profile
+      )
+    );
+  }
+
+
+  return jsonOut_({
+
+    ok: false,
+
+    error:
+      "Aksi tidak dikenali"
+
+  });
+}
+
+
+/* =========================
+   POST
+========================= */
+
+function doPost(e) {
+
+  const sheet =
+    getSheet_();
+
+  const p =
+    e.parameter || {};
+
+  let body = p;
+
+
+  /*
+   * Jika body dikirim sebagai JSON
+   */
+
+  if (
+    !p.action &&
+    e.postData &&
+    e.postData.contents
+  ) {
+
+    try {
+
+      body =
+        JSON.parse(
+          e.postData.contents
+        );
+
+    } catch (err) {
+
+      body = p;
+
+    }
+  }
+
+
+  /* ---------- TOKEN ---------- */
+
+  const idToken =
+    String(
+      body.idToken || ""
+    );
+
+  if (!idToken) {
+
+    return postResult_({
+
+      ok: false,
+
+      error:
+        "Token tidak ada"
+
+    });
+  }
+
+
+  const profile =
+    verifyGoogleToken_(idToken);
+
+  if (!profile) {
+
+    return postResult_({
+
+      ok: false,
+
+      error:
+        "Token tidak valid, silakan login ulang."
+
+    });
+  }
+
+
+  /* ---------- USER ROW ---------- */
+
+  let row =
+    findRow_(
+      sheet,
+      profile.email
+    );
+
+
+  /*
+   * Kalau user belum ada,
+   * buat baris baru.
+   */
+
+  if (row === -1) {
+
+    sheet.appendRow([
+
+      new Date(),
+
+      profile.email,
+
+      profile.name || "",
+
+      0,
+
+      profile.name || "",
+
+      profile.picture || "",
+
+      "",
+
+      ""
+
+    ]);
+
+    row =
+      sheet.getLastRow();
+  }
+
+
+  /* =========================
+     ME
+  ========================= */
+
+  if (body.action === "me") {
+
+    return postResult_(
+      getMe_(
+        sheet,
+        profile
+      )
+    );
+  }
+
+
+  /* =========================
+     RATE
+  ========================= */
+
+  if (body.action === "rate") {
+
+    const rating =
+      Math.max(
+        1,
+        Math.min(
+          5,
+          Number(body.rating) || 0
+        )
+      );
+
+    if (!rating) {
+
+      return postResult_({
+
+        ok: false,
+
+        error:
+          "Rating harus 1 sampai 5."
+
+      });
+    }
+
+
+    /*
+     * Simpan komentar
+     */
+
+    const review =
+      String(
+        body.review || ""
+      )
+        .trim()
+        .slice(0, 500);
+
+
+    /*
+     * Pertahankan foto lama
+     * kalau tidak upload foto baru.
+     */
+
+    let photoUrl =
+      String(
+        sheet
+          .getRange(row, 8)
+          .getValue() || ""
+      );
+
+
+    /*
+     * Upload foto baru
+     */
+
+    if (body.photoData) {
+
+      try {
+
+        photoUrl =
+          savePhoto_(
+            body.photoData,
+            body.photoMime,
+            body.photoName
+          );
+
+      } catch (err) {
+
+        return postResult_({
+
+          ok: false,
+
+          error:
+            "Foto gagal diupload: " +
+            err.message
+
+        });
+      }
+    }
+
+
+    /*
+     * Simpan seluruh data rating
+     */
+
+    sheet
+      .getRange(
+        row,
+        1,
+        1,
+        8
+      )
+      .setValues([
+
+        [
+
+          new Date(),
+
+          profile.email,
+
+          String(
+            sheet
+              .getRange(row, 3)
+              .getValue() ||
+            profile.name ||
+            ""
+          ),
+
+          rating,
+
+          profile.name || "",
+
+          profile.picture || "",
+
+          review,
+
+          photoUrl
+
+        ]
+
+      ]);
+
+
+    /*
+     * Kirim hasil terbaru
+     */
+
+    return postResult_({
+
+      ok: true,
+
+      summary:
+        buildSummary_(
+          sheet,
+          8,
+          profile.email
+        )
+
+    });
+  }
+
+
+  /* =========================
+     SET NAME
+  ========================= */
+
+  if (body.action === "setName") {
+
+    const name =
+      String(
+        body.displayName || ""
+      )
+        .slice(0, 30)
+        .trim();
+
+    if (!name) {
+
+      return postResult_({
+
+        ok: false,
+
+        error:
+          "Nama tidak boleh kosong"
+
+      });
+    }
+
+    sheet
+      .getRange(row, 3)
+      .setValue(name);
+
+    return postResult_({
+
+      ok: true,
+
+      summary:
+        buildSummary_(
+          sheet,
+          8,
+          profile.email
+        )
+
+    });
+  }
+
+
+  /* =========================
+     DELETE
+  ========================= */
+
+  if (body.action === "delete") {
+
+    const targetRow =
+      Number(body.row) || 0;
+
+    const lastRow =
+      sheet.getLastRow();
+
+
+    if (
+      targetRow < 2 ||
+      targetRow > lastRow
+    ) {
+
+      return postResult_({
+
+        ok: false,
+
+        error:
+          "Ulasan tidak ditemukan."
+
+      });
+    }
+
+
+    const targetEmail =
+      String(
+        sheet
+          .getRange(targetRow, 2)
+          .getValue() || ""
+      )
+        .toLowerCase();
+
+
+    const requesterEmail =
+      String(
+        profile.email || ""
+      )
+        .toLowerCase();
+
+
+    /*
+     * Boleh menghapus jika:
+     *
+     * 1. Admin
+     * atau
+     * 2. Pemilik komentar
+     */
+
+    const allowed =
+      requesterEmail ===
+        ADMIN_EMAIL.toLowerCase() ||
+      requesterEmail ===
+        targetEmail;
+
+
+    if (!allowed) {
+
+      return postResult_({
+
+        ok: false,
+
+        error:
+          "Kamu tidak punya izin menghapus ulasan ini."
+
+      });
+    }
+
+
+    /*
+     * Hapus foto dari Drive
+     */
+
+    const photoUrl =
+      String(
+        sheet
+          .getRange(targetRow, 8)
+          .getValue() || ""
+      );
+
+
+    if (photoUrl) {
+
+      const match =
+        photoUrl.match(
+          /[?&]id=([^&]+)/
+        );
+
+      if (match) {
+
+        try {
+
+          DriveApp
+            .getFileById(match[1])
+            .setTrashed(true);
+
+        } catch (err) {
+
+          // Jika foto tidak ditemukan,
+          // komentar tetap dihapus.
+
+        }
+      }
+    }
+
+
+    /*
+     * Hapus baris komentar
+     */
+
+    sheet.deleteRow(
+      targetRow
+    );
+
+
+    return postResult_({
+
+      ok: true,
+
+      summary:
+        buildSummary_(
+          sheet,
+          8,
+          requesterEmail
+        )
+
+    });
+  }
+
+
+  /* =========================
+     UNKNOWN ACTION
+  ========================= */
+
+  return postResult_({
+
+    ok: false,
+
+    error:
+      "Aksi tidak dikenali"
+
+  });
+}
